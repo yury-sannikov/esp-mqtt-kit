@@ -22,7 +22,7 @@
 
 #define MQTT_PUB_TOPIC "esp8266/status"
 #define MQTT_SUB_TOPIC "esp8266/control"
-#define GPIO_LED 2
+#define GPIO_LED 13
 #define MQTT_PORT 8883
 
 /* certs, key, and endpoint */
