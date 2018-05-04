@@ -1,7 +1,8 @@
 INC_DIRS += $(esp_mqtt_kit_ROOT)/include
 
 esp_mqtt_kit_INC_DIR = $(esp_mqtt_kit_ROOT)/include $(esp_mqtt_kit_ROOT)/src
-esp_mqtt_kit_SRC_DIR = $(esp_mqtt_kit_ROOT)/src
+esp_mqtt_kit_SRC_DIR = $(esp_mqtt_kit_ROOT)/src \
+	$(esp_mqtt_kit_ROOT)/src/config
 
 $(eval $(call component_compile_rules,esp_mqtt_kit))
 

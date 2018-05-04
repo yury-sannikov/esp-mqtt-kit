@@ -53,7 +53,7 @@ void blinkenRegisterTask(void *pvParameters)
 
 void ingestor_init();
 
-void mqtt_kit_init(mqtt_kit_config_t *config)
+void mqtt_kit_init(emk_config_t *config)
 {
     ingestor_init();
     xTaskCreate(blinkenTask, "blinkenTask", 256, NULL, 2, NULL);

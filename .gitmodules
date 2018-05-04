@@ -1,3 +1,6 @@
 [submodule "rtos"]
 	path = components/rtos
 	url = git@github.com:SuperHouse/esp-open-rtos.git
+[submodule "components/unity"]
+	path = components/unity
+	url = git@github.com:ThrowTheSwitch/Unity.git
