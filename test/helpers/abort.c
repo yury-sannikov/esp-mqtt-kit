@@ -3,13 +3,22 @@
 #include <stdarg.h>
 #include "helpers/abort.h"
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 int __test_abort_count;
 
 void __emq_abort(const char* message, ...) {
     va_list args;
     va_start(args, message);
-    printf("\n\t>> Captured abort: ");
-    printf(message, args);
+    printf("\n\t>> Captured " ANSI_COLOR_RED "abort: " ANSI_COLOR_MAGENTA);
+    vprintf(message, args);
+    printf(ANSI_COLOR_RESET "\n");
     va_end(args);
 
     ++__test_abort_count;

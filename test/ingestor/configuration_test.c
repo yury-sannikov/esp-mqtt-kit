@@ -1,35 +1,65 @@
 #include "unity.h"
 #include "unity_fixture.h"
+#include "helpers/common_types.h"
 #include "mqttkit/mqttkit.h"
 #include "helpers/abort.h"
 
 
-TEST_GROUP(Ingestor);
+TEST_GROUP_RUNNER(IngestorConfig)
+{
+  RUN_TEST_CASE(IngestorConfig, emk_abort_on_unknown_driver_type);
+  RUN_TEST_CASE(IngestorConfig, emk_add_gpio_ingestors_fail_on_null_config);
+  RUN_TEST_CASE(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_same_gpio);
+}
 
-TEST_SETUP(Ingestor)
+TEST_GROUP(IngestorConfig);
+TEST_SETUP(IngestorConfig)
 {
   clearAbort();
 }
 
-TEST_TEAR_DOWN(Ingestor)
+TEST_TEAR_DOWN(IngestorConfig)
 {
 }
 
-TEST(Ingestor, emk_create_configuration_should_return_non_null_config)
+TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_null_config)
 {
-  TEST_ASSERT_NOT_EQUAL(NULL, emk_create_configuration());
-}
-
-TEST(Ingestor, emk_add_gpio_ingestors_fail_on_null_config)
-{
-  emk_initialize(NULL);
+  _create_gpio_irq_block(NULL);
   TEST_ASSERT_EQUAL(1, hasAbort());
 }
 
-TEST(Ingestor, emk_add_gpio_ingestors_fail_on_having_same_gpio)
+
+TEST(IngestorConfig, emk_abort_on_unknown_driver_type)
+{
+  const emk_ingestor_t *ingestor_data[] = {
+      &(emk_ingestor_t) {
+          .name="non-existent", 
+          .type=15,
+      },
+      NULL
+  };
+
+  const emk_group_t *groups[] = {
+    MAKE_GROUP("main", 1,
+      .ingestors = ingestor_data
+    ),
+    NULL
+  };
+
+  emk_config_t config = {
+    .groups = groups,
+    .reserved_pins = 0
+  };
+  _create_gpio_irq_block(&config);
+  TEST_ASSERT_EQUAL(1, hasAbort());
+  
+}
+
+
+TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_same_gpio)
 {
   // Create GPIO ingestors and add config (reuse pin)
-  emk_ingestor_t *ingestor_data[] = {
+  const emk_ingestor_t *ingestor_data[] = {
       GPIO_INGESTOR("pin1",
         .address=EMK_COMMAND_ADDR(1),
         .config=GPIO_INGESTOR_CFG(
@@ -55,7 +85,7 @@ TEST(Ingestor, emk_add_gpio_ingestors_fail_on_having_same_gpio)
   };
 
   // Create main group and add ingestor
-  emk_group_t *groups[] = {
+  const emk_group_t *groups[] = {
     MAKE_GROUP("main", 1,
       .ingestors = ingestor_data
     ),
@@ -64,8 +94,11 @@ TEST(Ingestor, emk_add_gpio_ingestors_fail_on_having_same_gpio)
 
   // Add groups to the configuration
   emk_config_t config = {
-    .groups = groups
+    .groups = groups,
+    .reserved_pins = 0
   };
 
-  emk_initialize(&config);
+  _create_gpio_irq_block(&config);
+  TEST_ASSERT_EQUAL(1, hasAbort());
+
 }

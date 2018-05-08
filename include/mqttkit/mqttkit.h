@@ -3,9 +3,6 @@
 
 #include "mqttkit/configurator.h"
 
-// Create configuration instance
-emk_config_t* emk_create_configuration(void);
-
-void mqtt_kit_init(emk_config_t *config);
+void mqtt_kit_init(const emk_config_t *config);
 
 #endif // __ESP_MQTT_KIT_H__

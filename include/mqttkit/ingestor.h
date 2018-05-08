@@ -19,7 +19,7 @@ typedef enum {
 
 typedef enum _emk_ingestor_type {
     INGESTOR_TYPE_GPIO = 1,
-    iNGESTOR_TYPE_DS18B20 = 2
+    INGESTOR_TYPE_DS18B20 = 2
 } emk_ingestor_type_t;
 
 struct _gpio_ingestor_configuration {
@@ -45,7 +45,7 @@ struct _emk_ingestor {
     // Address which will be used for status update
     emk_address_t address;
     // Ingestor specific configuration
-    void* config;
+    const void* config;
 };
 
 #define GPIO_INGESTOR(aName, ...) \

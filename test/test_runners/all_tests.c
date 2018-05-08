@@ -3,7 +3,7 @@
 
 static void RunAllTests(void)
 {
-  RUN_TEST_GROUP(Ingestor);
+  RUN_TEST_GROUP(IngestorConfig);
 }
 
 int main(int argc, const char * argv[])

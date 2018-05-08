@@ -11,7 +11,7 @@ struct  _emk_group {
     // Group address, 1 to 15.
     uint8_t     group_address;
     // Ingestors array
-    emk_ingestor_t **ingestors;
+    const emk_ingestor_t **ingestors;
 };
 
 #define MAKE_GROUP(theName, addr, ...) \

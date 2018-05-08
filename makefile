@@ -48,7 +48,7 @@ UNITY_FILES=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c
 
-SRC_INGESTOR_CODE = $(shell find ./src/ingestor/ -type f -name '*.c')
+SRC_DRVIER_CODE = $(shell find ./src/drivers/ -type f -name '*.c')
 SRC_CONFIG_CODE = $(shell find ./src/config/ -type f -name '*.c')
 
 TEST_CODE = $(shell find ./test/ -type f -name '*.c')
@@ -67,7 +67,7 @@ all: clean default
 
 default:
 	$(C_COMPILER) $(CFLAGS) $(INC_DIRS) $(DEFINES) $(SYMBOLS) $(UNITY_FILES) $(TEST_CODE) \
-		$(SRC_INGESTOR_CODE) \
+		$(SRC_DRVIER_CODE) \
 		$(SRC_CONFIG_CODE) \
 		-o $(TARGET1)
 	- ./$(TARGET1) -v
