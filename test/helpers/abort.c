@@ -38,3 +38,14 @@ int hasAbort(void) {
         abort();
     }
 }
+
+int hasAborts(int expectedCount) {
+    if (__test_abort_count == expectedCount) {
+        return expectedCount;
+    } else if (__test_abort_count == 0) {
+        return 0;
+    } else {
+        printf("\nERROR: hasAborts detected %d aborts but expected %d.\n", __test_abort_count, expectedCount);
+        abort();
+    }
+}

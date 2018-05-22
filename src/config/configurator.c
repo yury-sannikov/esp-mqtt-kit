@@ -45,7 +45,7 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
                 ABORT("Unable to find driver %04x:%04X\n", (int)DRIVER_TYPE_INGESTOR, (int)ingestor->type);
                 return NULL;
             }
-            driver->check_gpio(&used_pins, ingestor);
+            driver->check_gpio(&used_pins, ingestor, group, cfg);
             driver->gpio_iqr_block(&__gpio_irq_block, ingestor);
         }
     }

@@ -19,7 +19,7 @@ struct _emk_driver {
     uint16_t subtype;
 
     // Check GPIO pin usage. Might update used_pins if pin can not be reused
-    void (*check_gpio)(uint16_t* /*used_pins*/, const emk_ingestor_t* /*ingestor*/);
+    void (*check_gpio)(uint16_t* /*used_pins*/, const emk_ingestor_t* /*ingestor*/, const emk_group_t* /*group*/, const emk_config_t* /* config */);
 
     // Driver might either update IRQ block or check that particular GPIO has been used by 
     // gpio ingestor
@@ -28,7 +28,7 @@ struct _emk_driver {
 };
 
 #define DECLARE_DRIVER(prefix) \
-    void prefix##__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor); \
+    void prefix##__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config); \
     void prefix##__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor);
 
 

@@ -9,7 +9,7 @@ TEST_GROUP_RUNNER(IngestorConfig)
 {
   RUN_TEST_CASE(IngestorConfig, emk_abort_on_unknown_driver_type);
   RUN_TEST_CASE(IngestorConfig, emk_add_gpio_ingestors_fail_on_null_config);
-  RUN_TEST_CASE(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_same_gpio);
+  RUN_TEST_CASE(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_reserved_gpio);
 }
 
 TEST_GROUP(IngestorConfig);
@@ -56,7 +56,7 @@ TEST(IngestorConfig, emk_abort_on_unknown_driver_type)
 }
 
 
-TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_same_gpio)
+TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_reserved_gpio)
 {
   // Create GPIO ingestors and add config (reuse pin)
   const emk_ingestor_t *ingestor_data[] = {
@@ -95,10 +95,10 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_same_gpio)
   // Add groups to the configuration
   emk_config_t config = {
     .groups = groups,
-    .reserved_pins = 0
+    .reserved_pins = BIT(2)
   };
 
   _create_gpio_irq_block(&config);
-  TEST_ASSERT_EQUAL(1, hasAbort());
+  TEST_ASSERT_EQUAL(2, hasAborts(2));
 
 }
