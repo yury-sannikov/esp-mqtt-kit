@@ -4,26 +4,26 @@
 #include "mqttkit/mqttkit.h"
 #include "mqttkit/debug.h"
 #include "mqttkit/driver.h"
+#include "mqttkit/message.h"
 
 void emk_initialize(const emk_config_t* cfg) {
     if (!cfg) {
         ABORT("emk_add_gpio_ingestors has null emk_config_t supplied");
         return;
     }
-    // uint32_t gpioMask = 0;
-    // for (emk_ingestor_t **ingestor_it = ingestors; *ingestor_it; ingestor_it++) {
-    //     emk_ingestor_t *ingestor = *ingestor_it;
-    //     printf("add %s\n", ingestor->name);
-    //     // uint32_t bitNumber = 1 << ingestor->gpio;
-    //     // if (gpioMask & bitNumber) {
-    //     //     ABORT("emk_add_gpio_ingestors has reused GPIO %d for %s", ingestor->gpio, ingestor->name);
-    //     // }
-    // }
+  RETAINED_PTR emk_gpio_irq_block_t* iblock = _create_gpio_irq_block(cfg);
+
+  QueueHandle_t message_queue = xQueueCreate(MAX_MESSAGE_QUEUE_SIZE, sizeof(emk_message_t));
+  iblock->queue = message_queue;
+
+  _register_interrupt_handlers(iblock);
 
 }
 
-static IRAM_DATA emk_gpio_irq_block_t  __gpio_irq_block;
+IRAM_DATA emk_gpio_irq_block_t  __gpio_irq_block;
 
+// Go over registered drivers and invoke gpio_iqr_block with `__gpio_irq_block` variable.
+// Return pointer to the `__gpio_irq_block` with all fields set up
 RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* cfg) {
     if (!cfg) {
         ABORT("_create_gpio_irq_block has null emk_config_t supplied");
@@ -38,7 +38,7 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
         const emk_group_t *group = *group_it;
         for (const emk_ingestor_t **ingestor_it = group->ingestors; *ingestor_it; ingestor_it++) {
             const emk_ingestor_t *ingestor = *ingestor_it;
-            
+
             const emk_driver_t *driver = emk_get_driver(DRIVER_TYPE_INGESTOR, ingestor->type);
 
             if (!driver) {
@@ -51,4 +51,15 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
     }
 
     return &__gpio_irq_block;
+}
+
+void _register_interrupt_handlers(const RETAINED_PTR emk_gpio_irq_block_t* block) {
+    uint16_t pins = block->active_pins;
+    uint8_t gpio_idx;
+    while ((gpio_idx = __builtin_ffs(pins)))
+    {
+        gpio_idx--;
+        pins &= ~BIT(gpio_idx);
+        gpio_set_interrupt(gpio_idx, GPIO_INTTYPE_EDGE_ANY, gpio_ingestor_interrupt_handler);
+    }
 }

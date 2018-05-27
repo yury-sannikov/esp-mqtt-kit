@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "helpers/abort.h"
+#include "helpers/testing.h"
 
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_GREEN   "\x1b[32m"
@@ -39,13 +39,6 @@ int hasAbort(void) {
     }
 }
 
-int hasAborts(int expectedCount) {
-    if (__test_abort_count == expectedCount) {
-        return expectedCount;
-    } else if (__test_abort_count == 0) {
-        return 0;
-    } else {
-        printf("\nERROR: hasAborts detected %d aborts but expected %d.\n", __test_abort_count, expectedCount);
-        abort();
-    }
+int getAbortsCount(void) {
+    return __test_abort_count;
 }

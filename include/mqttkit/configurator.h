@@ -2,6 +2,7 @@
 #define __ESP_MQTT_KIT_CFG_H__
 
 #include <stdint.h>
+#include "defaults.h"
 #include "helpers/common_types.h"
 #include "address.h"
 #include "group.h"
@@ -23,6 +24,8 @@ struct _emk_config {
 };
 
 struct _emk_gpio_irq_block {
+    // Message receiving queue
+    QueueHandle_t queue;
     // A bit mask of active pins
     uint16_t active_pins;
     // Previous triggered state
@@ -30,12 +33,14 @@ struct _emk_gpio_irq_block {
     // last tick values for the interrupt
     TickType_t last_irq[16];
     // Debounce in ticks
-    uint32_t debouce_values[16];
+    TickType_t debouce_values[16];
 } __attribute__ ((aligned (32)));
 
 
 // Create emk_gpio_irq_block_t from configuration or abort() if error detected.
 RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* cfg);
 
+// register interrupt handlers according to the emk_gpio_irq_block_t values
+void _register_interrupt_handlers(const RETAINED_PTR emk_gpio_irq_block_t* block);
 
 #endif // __ESP_MQTT_KIT_CFG_H__

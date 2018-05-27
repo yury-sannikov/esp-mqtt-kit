@@ -9,7 +9,6 @@ struct _gpio_ingestor_configuration;
 typedef struct _emk_ingestor emk_ingestor_t;
 typedef struct _gpio_ingestor_configuration emk_gpio_ingestor_configuration;
 
-
 // Contain a GPIO pin interrupt edge
 typedef enum {
     EMK_GPIO_EDGE_POS = 1,
@@ -28,14 +27,11 @@ struct _gpio_ingestor_configuration {
     // GPIO interrupt trigger
     emk_edge_t edge;
     // software debounce, msec
-    uint32_t debounce;    
+    uint32_t debounce;
 };
 
 #define GPIO_INGESTOR_CFG(...) \
-    &(emk_gpio_ingestor_configuration) { \
-        .debounce=50, \
-        ##__VA_ARGS__ \
-    }
+    &(emk_gpio_ingestor_configuration) { __VA_ARGS__ }
 
 struct _emk_ingestor {
     // Ingestor name, debugging only

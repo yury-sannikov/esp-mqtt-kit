@@ -7,7 +7,7 @@ typedef union _emk_address emk_address_t;
 
 union _emk_address {
     struct {
-        // Address 
+        // Address
         uint32_t address : 15;
         // 1 - command, 0 - status
         uint32_t command_status : 1;
