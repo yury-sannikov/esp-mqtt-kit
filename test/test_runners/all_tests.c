@@ -4,6 +4,7 @@
 static void RunAllTests(void)
 {
   RUN_TEST_GROUP(IngestorConfig);
+  RUN_TEST_GROUP(GPIO_ISR);
 }
 
 int main(int argc, const char * argv[])

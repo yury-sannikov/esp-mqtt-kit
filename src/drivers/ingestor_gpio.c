@@ -25,7 +25,14 @@ void ingestor_gpio__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const e
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
     uint16_t pin_m = BIT(cfg->gpio);
     gpio_irq_block->active_pins |= pin_m;
-    gpio_irq_block->state &= ~pin_m;
+
+    if (cfg->edge & EMK_GPIO_EDGE_POS) {
+        gpio_irq_block->pos_edge |= pin_m;
+    }
+    if (cfg->edge & EMK_GPIO_EDGE_NEG) {
+        gpio_irq_block->neg_edge |= pin_m;
+    }
+
     // set last irq to special value so first IRQ will be triggered anyway
     gpio_irq_block->last_irq[cfg->gpio] = IRQ_LAST_TRIGGERED_DEFAULT_TIME;
     uint32_t debounce = cfg->debounce;

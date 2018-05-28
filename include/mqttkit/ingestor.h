@@ -13,7 +13,7 @@ typedef struct _gpio_ingestor_configuration emk_gpio_ingestor_configuration;
 typedef enum {
     EMK_GPIO_EDGE_POS = 1,
     EMK_GPIO_EDGE_NEG = 2,
-    EMK_GPIO_EDGE_BOTH = 4
+    EMK_GPIO_EDGE_BOTH = 3
 } emk_edge_t;
 
 typedef enum _emk_ingestor_type {

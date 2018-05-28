@@ -5,7 +5,7 @@
 #include "configurator.h"
 
 
-#define IRQ_LAST_TRIGGERED_DEFAULT_TIME 0xFFFFFFFF
+#define IRQ_LAST_TRIGGERED_DEFAULT_TIME 0xDEADBEEF
 
 struct _emk_driver;
 typedef struct _emk_driver emk_driver_t;

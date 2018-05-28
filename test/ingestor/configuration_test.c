@@ -156,7 +156,7 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_check_irq_setup)
         .address=EMK_COMMAND_ADDR(1),
         .config=GPIO_INGESTOR_CFG(
           .gpio = 3,
-          .edge = EMK_GPIO_EDGE_POS,
+          .edge = EMK_GPIO_EDGE_BOTH,
           .debounce = 100
         )
       ),
@@ -177,7 +177,8 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_check_irq_setup)
 
   RETAINED_PTR emk_gpio_irq_block_t* iblock = _create_gpio_irq_block(&config);
   TEST_ASSERT_EQUAL_INT16(BIT(1) | BIT(3), iblock->active_pins);
-  TEST_ASSERT_EQUAL_INT16(0, iblock->state);
+  TEST_ASSERT_EQUAL_INT16(BIT(1)| BIT(3), iblock->pos_edge);
+  TEST_ASSERT_EQUAL_INT16(BIT(3), iblock->neg_edge);
   TEST_ASSERT_EQUAL_INT32(0, iblock->last_irq[0]);
   TEST_ASSERT_EQUAL_INT32(IRQ_LAST_TRIGGERED_DEFAULT_TIME, iblock->last_irq[1]);
   TEST_ASSERT_EQUAL_INT32(0, iblock->last_irq[2]);

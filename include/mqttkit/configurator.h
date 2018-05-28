@@ -28,8 +28,10 @@ struct _emk_gpio_irq_block {
     QueueHandle_t queue;
     // A bit mask of active pins
     uint16_t active_pins;
-    // Previous triggered state
-    uint16_t state;
+    // Fire on positive edge
+    uint16_t pos_edge;
+    // Fire on negative edge
+    uint16_t neg_edge;
     // last tick values for the interrupt
     TickType_t last_irq[16];
     // Debounce in ticks
