@@ -1,3 +1,4 @@
+#include <string.h>
 #include "unity.h"
 #include "helpers/common_types.h"
 
@@ -47,4 +48,20 @@ int _gpio_isr_status = 0;
 
 void _set_gpio_isr_status(int status) {
     _gpio_isr_status = status;
+}
+
+QueueHandle_t _xQueueSendFromISR_xQueue;
+emk_message_t _xQueueSendFromISR_msg;
+BaseType_t* _xQueueSendFromISR_pxHigherPriorityTaskWoken;
+BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken) {
+    _xQueueSendFromISR_xQueue = xQueue;
+    _xQueueSendFromISR_pxHigherPriorityTaskWoken = pxHigherPriorityTaskWoken;
+    memcpy(&_xQueueSendFromISR_msg, pvItemToQueue, sizeof(emk_message_t));
+    return pdTRUE;
+}
+
+void _xQueueSendFromISR_clear() {
+    _xQueueSendFromISR_xQueue = 0;
+    memset(&_xQueueSendFromISR_msg, 0, sizeof(emk_message_t));
+    _xQueueSendFromISR_pxHigherPriorityTaskWoken = NULL;
 }

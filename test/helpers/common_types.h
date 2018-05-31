@@ -2,6 +2,7 @@
 #define __ESP_MQTT_KIT__TEST_COMMON_H__
 #include <stdint.h>
 #include <stdbool.h>
+#include "mqttkit/message.h"
 
 #ifndef BIT
 #define BIT(X) (1<<(X))
@@ -10,14 +11,19 @@
 // RTOS types
 typedef uint32_t TickType_t;
 typedef uint32_t QueueHandle_t;
-typedef uint32_t UBaseType_t;
+typedef int32_t UBaseType_t;
+typedef uint32_t BaseType_t;
 
 // define stuff for tests only
 #define IRAM_DATA
 #define IRAM
 #define portTICK_PERIOD_MS 1
 #define GPIO_INTTYPE_EDGE_ANY 0xBAD
-
+#define pdTRUE			( ( BaseType_t ) 1 )
+#define pdPASS			( pdTRUE )
+#define pdFAIL			( pdFALSE )
+#define errQUEUE_EMPTY	( ( BaseType_t ) 0 )
+#define errQUEUE_FULL	( ( BaseType_t ) 0 )
 
 extern int _gpio_isr_status;
 void _set_gpio_isr_status(int status);
@@ -33,5 +39,11 @@ QueueHandle_t xQueueCreate(UBaseType_t uxQueueLength, UBaseType_t uxItemSize);
 
 extern bool _gpio_read_value;
 bool gpio_read(const uint8_t gpio_num);
+
+extern QueueHandle_t _xQueueSendFromISR_xQueue;
+extern emk_message_t _xQueueSendFromISR_msg;
+extern BaseType_t* _xQueueSendFromISR_pxHigherPriorityTaskWoken;
+BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken);
+void _xQueueSendFromISR_clear(void);
 
 #endif //__ESP_MQTT_KIT__TEST_COMMON_H__

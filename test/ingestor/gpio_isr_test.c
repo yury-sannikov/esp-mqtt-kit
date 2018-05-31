@@ -19,6 +19,7 @@ TEST_GROUP_RUNNER(GPIO_ISR)
   RUN_TEST_CASE(GPIO_ISR, high_pin_triggering);
   RUN_TEST_CASE(GPIO_ISR, low_pin_triggering);
   RUN_TEST_CASE(GPIO_ISR, anyedge_pin_triggering);
+  RUN_TEST_CASE(GPIO_ISR, send_status_test);
 }
 
 TEST_GROUP(GPIO_ISR);
@@ -27,6 +28,7 @@ TEST_SETUP(GPIO_ISR)
   clearAbort();
   _gpio_isr_status = 0;
   memset(&__gpio_irq_block, 0, sizeof(emk_gpio_irq_block_t));
+  _xQueueSendFromISR_clear();
 }
 
 TEST_TEAR_DOWN(GPIO_ISR)
@@ -160,3 +162,26 @@ TEST(GPIO_ISR, anyedge_pin_triggering) {
     TEST_ASSERT_EQUAL(1, _gpio_isr_status);
 }
 
+TEST(GPIO_ISR, send_status_test) {
+    __gpio_irq_block.active_pins = 0xFFFF;
+    __gpio_irq_block.last_irq[3] = 0;
+    __gpio_irq_block.debouce_values[3] = 50;
+    _task_tick_count = 100;
+    _gpio_read_value = true;
+    __gpio_irq_block.pos_edge = 0x8;
+    gpio_ingestor_interrupt_handler(3);
+    TEST_ASSERT_EQUAL(1, _gpio_isr_status);
+
+    emk_message_t msg = {
+        .address = EMK_SYS_MIDDLEWARE_ADDR(DRIVER_TYPE_INGESTOR),
+        .data = (emk_data_t) {
+            .type = DATA_TYPE_GPIO,
+            .of.gpio = (emk_gpio_data_t) {
+                .gpio_num = 3,
+                .gpio_val = 1
+            }
+        }
+    };
+
+    TEST_ASSERT_EQUAL_MEMORY(&msg, &_xQueueSendFromISR_msg, sizeof(emk_message_t));
+}
