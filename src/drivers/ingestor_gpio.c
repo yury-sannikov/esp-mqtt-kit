@@ -4,6 +4,8 @@
 #include "mqttkit/driver.h"
 #include "mqttkit/ingestor.h"
 #include "mqttkit/debug.h"
+#include "mqttkit/context.h"
+#include "helpers/common_types.h"
 
 void ingestor_gpio__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config) {
     (void)config;
@@ -42,8 +44,39 @@ void ingestor_gpio__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const e
     gpio_irq_block->debouce_values[cfg->gpio] = debounce / portTICK_PERIOD_MS;
 }
 
-emk_driver_middleware_result_t ingestor_gpio__message_middleware(const emk_config_t* config, void *message) {
-    (void)config;
-    (void)message;
-    return MIDDLEWARE_RESULT_NOT_HANDLED;
+emk_driver_middleware_result_t ingestor_gpio__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context) {
+
+    // Return if message was not addressed to ingestor
+    if (!EMK_IS_SYSTEM_ADDR(message->address) || message->address.s.driver_type != DRIVER_TYPE_INGESTOR) {
+        return MIDDLEWARE_RESULT_NOT_HANDLED;
+    }
+
+    const emk_gpio_data_t* gpio_data = &message->data.of.gpio;
+
+    for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
+        const emk_group_t *group = *group_it;
+        for (const emk_ingestor_t **ingestor_it = group->ingestors; *ingestor_it; ingestor_it++) {
+            const emk_ingestor_t *ingestor = *ingestor_it;
+            if (ingestor->type != INGESTOR_TYPE_GPIO) {
+                continue;
+            }
+            const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
+            if (cfg->gpio == gpio_data->gpio_num) {
+                // Add group to the address, if no group has been specified
+                emk_address_t address_with_group;
+                EMK_ADDRESS_MERGE_WITH_GROUP(address_with_group, ingestor->address, *group);
+                emk_message_t msg = {
+                    .address = address_with_group,
+                    .data = (emk_data_t) {
+                        .type = DATA_TYPE_B8,
+                        .of.b8 = gpio_data->gpio_val
+                    }
+                };
+
+                // Send message by making copy of it. Use active group if address has no group in it
+                emk_context_send(context, &msg);
+            }
+        }
+    }
+    return MIDDLEWARE_RESULT_HANDLED;
 }

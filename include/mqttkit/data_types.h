@@ -8,7 +8,8 @@ typedef struct _emk_data emk_data_t;
 
 typedef enum {
     DATA_TYPE_INVALID = 0,
-    DATA_TYPE_GPIO = 1
+    DATA_TYPE_GPIO = 1,
+    DATA_TYPE_B8 = 2
 } emk_data_type_t;
 
 
@@ -22,6 +23,7 @@ struct _emk_data {
     uint8_t type;
     union {
         emk_gpio_data_t gpio;
+        uint8_t b8;
     } of;
 };
 

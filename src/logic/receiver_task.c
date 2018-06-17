@@ -1,0 +1,32 @@
+#include "mqttkit/configurator.h"
+#include "mqttkit/debug.h"
+#include "mqttkit/driver.h"
+#include "mqttkit/message.h"
+#include "helpers/common_types.h"
+
+int receiver_task( void *pvParameters )
+{
+    const emk_task_parameter_block_t* pb = (const emk_task_parameter_block_t*)pvParameters;
+    if (!pb) {
+        ABORT("receiver_task has null parameter block received");
+        return -1;
+    }
+    if (!pb->irq_block->queue) {
+        ABORT("receiver_task has no queue set");
+        return -1;
+    }
+    emk_message_t msg;
+    emk_context_t context;
+    for( ;; ) {
+        if (xQueueReceive(pb->irq_block->queue, &msg, LOGIC_TIMER_RESOLUTION_MS / portTICK_PERIOD_MS)) {
+            emk_context_init(&context, &msg.address);
+
+            if (MIDDLEWARE_RESULT_HANDLED != emk_invoke_driver_middleware(pb->config, &msg, &context)) {
+                // invoke logic
+            }
+        }
+
+        // HERE: Process timers
+        emk_context_cleanup(&context);
+    }
+}

@@ -65,3 +65,13 @@ void _xQueueSendFromISR_clear() {
     memset(&_xQueueSendFromISR_msg, 0, sizeof(emk_message_t));
     _xQueueSendFromISR_pxHigherPriorityTaskWoken = NULL;
 }
+
+
+const emk_message_t* _xQueueReceive_pvBuffer;
+BaseType_t _xQueueReceive_retval;
+BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicksToWait) {
+    (void)xQueue;
+    (void)xTicksToWait;
+    memcpy(pvBuffer, _xQueueReceive_pvBuffer, sizeof(emk_message_t));
+    return _xQueueReceive_retval;
+}

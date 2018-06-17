@@ -13,9 +13,11 @@
 
 struct _emk_config;
 struct _emk_gpio_irq_block;
+struct _emk_task_parameter_block;
 
 typedef struct _emk_config emk_config_t;
 typedef struct _emk_gpio_irq_block emk_gpio_irq_block_t;
+typedef struct _emk_task_parameter_block emk_task_parameter_block_t;
 
 
 struct _emk_config {
@@ -38,6 +40,11 @@ struct _emk_gpio_irq_block {
     TickType_t debouce_values[16];
 } __attribute__ ((aligned (32)));
 
+
+struct _emk_task_parameter_block {
+    const emk_config_t* config;
+    const emk_gpio_irq_block_t* irq_block;
+};
 
 // Create emk_gpio_irq_block_t from configuration or abort() if error detected.
 RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* cfg);

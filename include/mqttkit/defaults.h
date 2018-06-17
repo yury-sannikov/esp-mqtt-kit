@@ -10,5 +10,7 @@
 // to some of the false interrupts being generated.
 #define DEFAULT_DEBOUNCE_MSEC 50
 
+// RTOS will sit in xQueueReceive for that amount of time before processing any timers
+#define LOGIC_TIMER_RESOLUTION_MS 100
 
 #endif // __ESP_MQTT_KIT_DEFAULTS_H__

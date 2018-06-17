@@ -46,4 +46,8 @@ extern BaseType_t* _xQueueSendFromISR_pxHigherPriorityTaskWoken;
 BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken);
 void _xQueueSendFromISR_clear(void);
 
+extern const emk_message_t* _xQueueReceive_pvBuffer;
+extern BaseType_t _xQueueReceive_retval;
+BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicksToWait);
+
 #endif //__ESP_MQTT_KIT__TEST_COMMON_H__

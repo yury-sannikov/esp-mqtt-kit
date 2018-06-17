@@ -3,7 +3,8 @@
 #include <stdint.h>
 #include "ingestor.h"
 #include "configurator.h"
-
+#include "context.h"
+#include "message.h"
 
 #define IRQ_LAST_TRIGGERED_DEFAULT_TIME 0xDEADBEEF
 
@@ -35,14 +36,14 @@ struct _emk_driver {
 
     // Each logic message goes through drivers middleware. Middleware can handle it
     // and ignore or dispatch another message
-    emk_driver_middleware_result_t (*message_middleware)(const emk_config_t* config, void *message);
+    emk_driver_middleware_result_t (*message_middleware)(const emk_config_t* config, const emk_message_t* message, emk_context_t* context);
 
 };
 
 #define DECLARE_DRIVER(prefix) \
     void prefix##__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config); \
     void prefix##__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor); \
-    emk_driver_middleware_result_t prefix##__message_middleware(const emk_config_t* config, void *message);
+    emk_driver_middleware_result_t prefix##__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context);
 
 
 #define REGISTER_DRIVER(theType, theSubtype, prefix) \
@@ -64,5 +65,9 @@ extern IRAM_DATA emk_gpio_irq_block_t  __gpio_irq_block;
 // Driver isr for gpio ingestor
 void IRAM gpio_ingestor_interrupt_handler(uint8_t gpio_num);
 
+// Call driver's middleware. Driver may consume message, optionally send another one through context
+// If message consumed, MIDDLEWARE_RESULT_HANDLED should be returned.
+// New message goes back into queue so other middleware have a chance to process that new message
+emk_driver_middleware_result_t emk_invoke_driver_middleware(const emk_config_t* config, const emk_message_t *message, emk_context_t* context);
 
 #endif // __ESP_MQTT_KIT_DRIVER_H__

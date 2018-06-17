@@ -50,6 +50,7 @@ UNITY_FILES=\
 
 SRC_DRVIER_CODE = $(shell find ./src/drivers/ -type f -name '*.c')
 SRC_CONFIG_CODE = $(shell find ./src/config/ -type f -name '*.c')
+SRC_LOGIC_CODE = $(shell find ./src/logic/ -type f -name '*.c')
 
 TEST_CODE = $(shell find ./test/ -type f -name '*.c')
 
@@ -69,6 +70,7 @@ default:
 	$(C_COMPILER) $(CFLAGS) $(INC_DIRS) $(DEFINES) $(SYMBOLS) $(UNITY_FILES) $(TEST_CODE) \
 		$(SRC_DRVIER_CODE) \
 		$(SRC_CONFIG_CODE) \
+		$(SRC_LOGIC_CODE) \
 		-o $(TARGET1)
 	- ./$(TARGET1) -v
 

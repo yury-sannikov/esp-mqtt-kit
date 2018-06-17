@@ -26,6 +26,13 @@ union _emk_address {
     uint32_t v;
 };
 
+// Copy addrSrc to addrDst and assign group_mask from groupSrc if it was not set
+#define EMK_ADDRESS_MERGE_WITH_GROUP(addrDst, addrSrc, groupSrc) \
+    (addrDst) = (addrSrc); \
+    if (!EMK_IS_SYSTEM_ADDR((addrDst)) && (addrDst).f.group_mask == 0) { \
+        addrDst.f.group_mask = 1 < ((groupSrc).group_address & 0xF); \
+    }
+
 // Create Command address with multicast bit group address
 #define EMK_SYS_MIDDLEWARE_ADDR(theType) \
     (emk_address_t) { \
@@ -33,6 +40,7 @@ union _emk_address {
         .s.driver_type = theType \
     }
 
+#define EMK_IS_SYSTEM_ADDR(theAddr) (theAddr.f.address == 0)
 
 // Create Command address with default group
 #define EMK_COMMAND_ADDR(theAddr) \
