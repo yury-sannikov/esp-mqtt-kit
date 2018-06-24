@@ -60,6 +60,7 @@ emk_driver_middleware_result_t ingestor_gpio__message_middleware(const emk_confi
             if (ingestor->type != INGESTOR_TYPE_GPIO) {
                 continue;
             }
+
             const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
             if (cfg->gpio == gpio_data->gpio_num) {
                 // Add group to the address, if no group has been specified

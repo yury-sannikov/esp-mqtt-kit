@@ -29,9 +29,7 @@ union _emk_address {
 // Copy addrSrc to addrDst and assign group_mask from groupSrc if it was not set
 #define EMK_ADDRESS_MERGE_WITH_GROUP(addrDst, addrSrc, groupSrc) \
     (addrDst) = (addrSrc); \
-    if (!EMK_IS_SYSTEM_ADDR((addrDst)) && (addrDst).f.group_mask == 0) { \
-        addrDst.f.group_mask = 1 < ((groupSrc).group_address & 0xF); \
-    }
+    addrDst.f.group_mask = 1 << ((groupSrc).group_address & 0xF);
 
 // Create Command address with multicast bit group address
 #define EMK_SYS_MIDDLEWARE_ADDR(theType) \
@@ -90,5 +88,23 @@ union _emk_address {
         .f.group_mask = grpMask & 0xFFFF \
     }
 
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0')
+
+#define PRINT_ADDR(theMsg, theAddr) \
+    printf("%s [Address: %c.%X, Group: "BYTE_TO_BINARY_PATTERN"]\n", \
+        (theMsg), \
+        (theAddr).f.command_status == 1 ? 'c': 's', \
+        (theAddr).f.address, \
+        BYTE_TO_BINARY((theAddr).f.group_mask) \
+    );
 
 #endif //__ESP_MQTT_KIT_ADDRESS_H__

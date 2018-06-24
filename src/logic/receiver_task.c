@@ -13,7 +13,7 @@ int receiver_task( void *pvParameters )
     }
     if (!pb->irq_block->queue) {
         ABORT("receiver_task has no queue set");
-        return -1;
+        return -2;
     }
     emk_message_t msg;
     emk_context_t context;
@@ -27,6 +27,13 @@ int receiver_task( void *pvParameters )
         }
 
         // HERE: Process timers
+
+        // Check & cleanup context
         emk_context_cleanup(&context);
+
+#ifdef SYSTEM_UNDER_TEST
+        break;
+#endif
     }
+    return 0;
 }

@@ -48,11 +48,11 @@ UNITY_FILES=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c
 
-SRC_DRVIER_CODE = $(shell find ./src/drivers/ -type f -name '*.c')
-SRC_CONFIG_CODE = $(shell find ./src/config/ -type f -name '*.c')
-SRC_LOGIC_CODE = $(shell find ./src/logic/ -type f -name '*.c')
+SRC_DRVIER_CODE = $(shell find ./src/drivers -type f -name '*.c')
+SRC_CONFIG_CODE = $(shell find ./src/config -type f -name '*.c')
+SRC_LOGIC_CODE = $(shell find ./src/logic -type f -name '*.c')
 
-TEST_CODE = $(shell find ./test/ -type f -name '*.c')
+TEST_CODE = $(shell find ./test -type f -name '*.c')
 
 INC_DIRS=-I. \
 	-I./test \
@@ -60,7 +60,7 @@ INC_DIRS=-I. \
 	-I$(UNITY_ROOT)/src \
 	-I$(UNITY_ROOT)/extras/fixture/src
 
-DEFINES=-DUNITY_INCLUDE_CONFIG_H
+DEFINES=-DUNITY_INCLUDE_CONFIG_H -DSYSTEM_UNDER_TEST
 
 SYMBOLS=
 
