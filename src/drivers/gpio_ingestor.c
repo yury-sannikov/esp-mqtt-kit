@@ -7,7 +7,7 @@
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
 
-void ingestor_gpio__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config) {
+void gpio_ingestor__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config) {
     (void)config;
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
     uint16_t pin_m = BIT(cfg->gpio);
@@ -23,7 +23,7 @@ void ingestor_gpio__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingest
 
 }
 
-void ingestor_gpio__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor) {
+void gpio_ingestor__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor) {
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
     uint16_t pin_m = BIT(cfg->gpio);
     gpio_irq_block->active_pins |= pin_m;
@@ -44,7 +44,7 @@ void ingestor_gpio__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const e
     gpio_irq_block->debouce_values[cfg->gpio] = debounce / portTICK_PERIOD_MS;
 }
 
-emk_driver_middleware_result_t ingestor_gpio__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context) {
+emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context) {
 
     // Return if message was not addressed to ingestor
     if (!EMK_IS_SYSTEM_ADDR(message->address) || message->address.s.driver_type != DRIVER_TYPE_INGESTOR) {

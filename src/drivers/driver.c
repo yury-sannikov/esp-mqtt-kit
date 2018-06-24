@@ -5,10 +5,10 @@
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
 
-DECLARE_DRIVER(ingestor_gpio)
+DECLARE_DRIVER(gpio_ingestor)
 
 const emk_driver_t *driver_data[] = {
-    REGISTER_DRIVER(DRIVER_TYPE_INGESTOR, INGESTOR_TYPE_GPIO, ingestor_gpio),
+    REGISTER_DRIVER(DRIVER_TYPE_INGESTOR, INGESTOR_TYPE_GPIO, gpio_ingestor),
     NULL
 };
 
