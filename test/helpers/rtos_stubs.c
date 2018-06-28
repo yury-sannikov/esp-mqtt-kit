@@ -52,11 +52,17 @@ void _set_gpio_isr_status(int status) {
 
 QueueHandle_t _xQueueSendFromISR_xQueue;
 emk_message_t _xQueueSendFromISR_msg;
+emk_message_t _xQueueSendFromISR_msg_buff[10];
+int _xQueueSendFromISR_msg_buff_idx = 0;
 BaseType_t* _xQueueSendFromISR_pxHigherPriorityTaskWoken;
 BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken) {
     _xQueueSendFromISR_xQueue = xQueue;
     _xQueueSendFromISR_pxHigherPriorityTaskWoken = pxHigherPriorityTaskWoken;
     memcpy(&_xQueueSendFromISR_msg, pvItemToQueue, sizeof(emk_message_t));
+    memcpy(&_xQueueSendFromISR_msg_buff[_xQueueSendFromISR_msg_buff_idx++], pvItemToQueue, sizeof(emk_message_t));
+    if (_xQueueSendFromISR_msg_buff_idx >= 10) {
+        _xQueueSendFromISR_msg_buff_idx = 0;
+    }
     return pdTRUE;
 }
 
@@ -64,6 +70,8 @@ void _xQueueSendFromISR_clear() {
     _xQueueSendFromISR_xQueue = 0;
     memset(&_xQueueSendFromISR_msg, 0, sizeof(emk_message_t));
     _xQueueSendFromISR_pxHigherPriorityTaskWoken = NULL;
+    memset(&_xQueueSendFromISR_msg_buff, 0, sizeof(emk_message_t) * 10);
+    _xQueueSendFromISR_msg_buff_idx = 0;
 }
 
 
@@ -74,4 +82,11 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicks
     (void)xTicksToWait;
     memcpy(pvBuffer, _xQueueReceive_pvBuffer, sizeof(emk_message_t));
     return _xQueueReceive_retval;
+}
+
+uint8_t _gpio_write__gpio_num;
+bool _gpio_write__set;
+void gpio_write(const uint8_t gpio_num, const bool set) {
+    _gpio_write__gpio_num = gpio_num;
+    _gpio_write__set = set;
 }

@@ -45,9 +45,27 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
                 ABORT("Unable to find driver %04x:%04X\n", (int)DRIVER_TYPE_INGESTOR, (int)ingestor->type);
                 return NULL;
             }
-            driver->check_gpio(&used_pins, ingestor, group, cfg);
+            // GPIO ingestor can effectively reuse pins so supply only reserved_pins as an input
+            uint16_t pins = cfg->reserved_pins;
+            driver->check_gpio(&pins, ingestor, group, cfg);
+            // Collect used pins for actuators
+            used_pins |= pins;
+
             driver->gpio_iqr_block(&__gpio_irq_block, ingestor);
         }
+        for (const emk_actuator_t **actuator_it = group->actuators; *actuator_it; actuator_it++) {
+            const emk_actuator_t *actuator = *actuator_it;
+
+            const emk_driver_t *driver = emk_get_driver(DRIVER_TYPE_ACTUATOR, actuator->type);
+
+            if (!driver) {
+                ABORT("Unable to find driver %04x:%04X\n", (int)DRIVER_TYPE_ACTUATOR, (int)actuator->type);
+                return NULL;
+            }
+            // Actuators can not reuse pins
+            driver->check_gpio(&used_pins, actuator, group, cfg);
+        }
+
     }
 
     return &__gpio_irq_block;

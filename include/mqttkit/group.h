@@ -2,6 +2,7 @@
 #define __ESP_MQTT_KIT_GROUP_H__
 #include <stdint.h>
 #include "ingestor.h"
+#include "actuator.h"
 
 struct  _emk_group;
 typedef struct _emk_group emk_group_t;
@@ -12,6 +13,8 @@ struct  _emk_group {
     uint8_t     group_address;
     // Ingestors array
     const emk_ingestor_t **ingestors;
+    // Actuators array
+    const emk_actuator_t **actuators;
 };
 
 #define MAKE_GROUP(theName, addr, ...) \

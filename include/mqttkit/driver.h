@@ -12,7 +12,8 @@ struct _emk_driver;
 typedef struct _emk_driver emk_driver_t;
 
 typedef enum {
-    DRIVER_TYPE_INGESTOR = 1
+    DRIVER_TYPE_INGESTOR = 1,
+    DRIVER_TYPE_ACTUATOR = 2
 } emk_driver_type_t;
 
 typedef enum {
@@ -28,11 +29,11 @@ struct _emk_driver {
     uint16_t subtype;
 
     // Check GPIO pin usage. Might update used_pins if pin can not be reused
-    void (*check_gpio)(uint16_t* /*used_pins*/, const emk_ingestor_t* /*ingestor*/, const emk_group_t* /*group*/, const emk_config_t* /* config */);
+    void (*check_gpio)(uint16_t* /*used_pins*/, const void* /*driver*/, const emk_group_t* /*group*/, const emk_config_t* /* config */);
 
     // Driver might either update IRQ block or check that particular GPIO has been used by
     // gpio ingestor
-    void (*gpio_iqr_block)(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor);
+    void (*gpio_iqr_block)(emk_gpio_irq_block_t* gpio_irq_block, const void* driver);
 
     // Each logic message goes through drivers middleware. Middleware can handle it
     // and ignore or dispatch another message
@@ -41,8 +42,8 @@ struct _emk_driver {
 };
 
 #define DECLARE_DRIVER(prefix) \
-    void prefix##__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config); \
-    void prefix##__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor); \
+    void prefix##__check_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config); \
+    void prefix##__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const void* driver); \
     emk_driver_middleware_result_t prefix##__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context);
 
 

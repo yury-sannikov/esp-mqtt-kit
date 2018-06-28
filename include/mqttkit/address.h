@@ -26,6 +26,9 @@ union _emk_address {
     uint32_t v;
 };
 
+// Check if 2 addresses are equal
+#define SAME_ADDRESS(addrOne, addrTwo) ((addrOne).v == (addrTwo).v)
+
 // Copy addrSrc to addrDst and assign group_mask from groupSrc if it was not set
 #define EMK_ADDRESS_MERGE_WITH_GROUP(addrDst, addrSrc, groupSrc) \
     (addrDst) = (addrSrc); \

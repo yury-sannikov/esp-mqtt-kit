@@ -43,11 +43,19 @@ bool gpio_read(const uint8_t gpio_num);
 extern QueueHandle_t _xQueueSendFromISR_xQueue;
 extern emk_message_t _xQueueSendFromISR_msg;
 extern BaseType_t* _xQueueSendFromISR_pxHigherPriorityTaskWoken;
+extern emk_message_t _xQueueSendFromISR_msg_buff[10];
+extern int _xQueueSendFromISR_msg_buff_idx;
+
 BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken);
 void _xQueueSendFromISR_clear(void);
 
 extern const emk_message_t* _xQueueReceive_pvBuffer;
 extern BaseType_t _xQueueReceive_retval;
 BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicksToWait);
+
+extern uint8_t _gpio_write__gpio_num;
+extern bool _gpio_write__set;
+void gpio_write(const uint8_t gpio_num, const bool set);
+
 
 #endif //__ESP_MQTT_KIT__TEST_COMMON_H__

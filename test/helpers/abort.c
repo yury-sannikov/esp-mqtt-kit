@@ -24,6 +24,15 @@ void __emq_abort(const char* message, ...) {
     ++__test_abort_count;
 }
 
+void __emq_warning(const char* message, ...) {
+    va_list args;
+    va_start(args, message);
+    printf("\n\t>>" ANSI_COLOR_YELLOW "Warning: " ANSI_COLOR_BLUE);
+    vprintf(message, args);
+    printf(ANSI_COLOR_RESET "\n");
+    va_end(args);
+}
+
 void clearAbort(void) {
     __test_abort_count = 0;
 }

@@ -24,6 +24,10 @@ TEST_TEAR_DOWN(IngestorConfig)
 {
 }
 
+const emk_actuator_t *zeor_actuators[] = {
+    NULL
+};
+
 TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_null_config)
 {
   _create_gpio_irq_block(NULL);
@@ -43,7 +47,8 @@ TEST(IngestorConfig, emk_abort_on_unknown_driver_type)
 
   const emk_group_t *groups[] = {
     MAKE_GROUP("main", 1,
-      .ingestors = ingestor_data
+      .ingestors = ingestor_data,
+      .actuators = zeor_actuators
     ),
     NULL
   };
@@ -89,7 +94,8 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_having_reserved_gpio)
   // Create main group and add ingestor
   const emk_group_t *groups[] = {
     MAKE_GROUP("main", 1,
-      .ingestors = ingestor_data
+      .ingestors = ingestor_data,
+      .actuators = zeor_actuators
     ),
     NULL
   };
@@ -127,7 +133,8 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_large_gpio)
 
   const emk_group_t *groups[] = {
     MAKE_GROUP("main", 1,
-      .ingestors = ingestor_data
+      .ingestors = ingestor_data,
+      .actuators = zeor_actuators
     ),
     NULL
   };
@@ -165,7 +172,8 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_check_irq_setup)
 
   const emk_group_t *groups[] = {
     MAKE_GROUP("main", 1,
-      .ingestors = ingestor_data
+      .ingestors = ingestor_data,
+      .actuators = zeor_actuators
     ),
     NULL
   };

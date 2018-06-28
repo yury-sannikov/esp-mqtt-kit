@@ -7,8 +7,9 @@
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
 
-void gpio_ingestor__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingestor, const emk_group_t *group, const emk_config_t* config) {
+void gpio_ingestor__check_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config) {
     (void)config;
+    const emk_ingestor_t* ingestor = (const emk_ingestor_t*)driver;
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
     uint16_t pin_m = BIT(cfg->gpio);
     if (pin_m == 0 || cfg->gpio > 15) {
@@ -20,10 +21,11 @@ void gpio_ingestor__check_gpio(uint16_t* used_pins, const emk_ingestor_t* ingest
         ABORT("Ingestor %s in group %s attempt to reuse pin %d", ingestor->name, group->name, cfg->gpio);
         return;
     }
-
+    *used_pins |= pin_m;
 }
 
-void gpio_ingestor__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const emk_ingestor_t* ingestor) {
+void gpio_ingestor__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const void* driver) {
+    const emk_ingestor_t* ingestor = (const emk_ingestor_t*)driver;
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
     uint16_t pin_m = BIT(cfg->gpio);
     gpio_irq_block->active_pins |= pin_m;
@@ -62,7 +64,13 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
             }
 
             const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
-            if (cfg->gpio == gpio_data->gpio_num) {
+
+            // Multiple addresses might be assigned to the same pin
+            // Check if this particular configuration should convert GPIO message
+            bool should_trigger = ((cfg->edge & EMK_GPIO_EDGE_POS) && (gpio_data->gpio_val != 0)) ||
+                ((cfg->edge & EMK_GPIO_EDGE_NEG) && (gpio_data->gpio_val == 0));
+
+            if (cfg->gpio == gpio_data->gpio_num && should_trigger) {
                 // Add group to the address, if no group has been specified
                 emk_address_t address_with_group;
                 EMK_ADDRESS_MERGE_WITH_GROUP(address_with_group, ingestor->address, *group);

@@ -6,9 +6,11 @@
 #include "helpers/common_types.h"
 
 DECLARE_DRIVER(gpio_ingestor)
+DECLARE_DRIVER(gpio_actuator)
 
 const emk_driver_t *driver_data[] = {
     REGISTER_DRIVER(DRIVER_TYPE_INGESTOR, INGESTOR_TYPE_GPIO, gpio_ingestor),
+    REGISTER_DRIVER(DRIVER_TYPE_ACTUATOR, ACTUATOR_TYPE_GPIO, gpio_actuator),
     NULL
 };
 
