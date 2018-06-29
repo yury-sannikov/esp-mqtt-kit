@@ -98,8 +98,7 @@ TEST(RECEIVER_TASK, middleware_should_process_system_message) {
         }
     };
 
-    TEST_ASSERT_EQUAL_MEMORY(&msg_converted.address, &_xQueueSendFromISR_msg.address, sizeof(emk_address_t));
-    TEST_ASSERT_EQUAL_MEMORY(&msg_converted.data, &_xQueueSendFromISR_msg.data, sizeof(emk_data_t));
+    TEST_ASSERT_EQUAL_MSG(msg_converted, _xQueueSendFromISR_msg);
 
     _xQueueSendFromISR_clear();
 
@@ -121,7 +120,7 @@ TEST(RECEIVER_TASK, middleware_should_process_system_message) {
     emk_message_t zeroMessage;
     memset(&zeroMessage, 0, sizeof(emk_message_t));
 
-    TEST_ASSERT_EQUAL_MEMORY(&zeroMessage, &_xQueueSendFromISR_msg, sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(zeroMessage, _xQueueSendFromISR_msg);
 
 }
 
@@ -199,7 +198,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
         }
     };
 
-    TEST_ASSERT_EQUAL_MEMORY(&msg_irq, &_xQueueSendFromISR_msg_buff[0], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg_irq, _xQueueSendFromISR_msg_buff[0]);
 
     emk_message_t msg_irq2 = {
         .address = EMK_SYS_MIDDLEWARE_ADDR(DRIVER_TYPE_INGESTOR),
@@ -212,7 +211,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
         }
     };
 
-    TEST_ASSERT_EQUAL_MEMORY(&msg_irq2, &_xQueueSendFromISR_msg_buff[1], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg_irq2, _xQueueSendFromISR_msg_buff[1]);
 
     emk_message_t msg_replay[2];
     memcpy(&msg_replay, &_xQueueSendFromISR_msg_buff, sizeof(emk_message_t[2]));
@@ -239,7 +238,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 1
         }
     };
-    TEST_ASSERT_EQUAL_MEMORY(&msg1_converted, &_xQueueSendFromISR_msg_buff[0], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg1_converted, _xQueueSendFromISR_msg_buff[0]);
 
     // Pin1 Both receives 1
     emk_message_t msg2_converted = {
@@ -249,7 +248,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 1
         }
     };
-    TEST_ASSERT_EQUAL_MEMORY(&msg2_converted, &_xQueueSendFromISR_msg_buff[1], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg2_converted, _xQueueSendFromISR_msg_buff[1]);
 
     // Pin1 neg receives 0
     emk_message_t msg3_converted = {
@@ -259,7 +258,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 0
         }
     };
-    TEST_ASSERT_EQUAL_MEMORY(&msg3_converted, &_xQueueSendFromISR_msg_buff[2], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg3_converted, _xQueueSendFromISR_msg_buff[2]);
 
     // Pin1 both receives 0
     emk_message_t msg4_converted = {
@@ -269,5 +268,5 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 0
         }
     };
-    TEST_ASSERT_EQUAL_MEMORY(&msg4_converted, &_xQueueSendFromISR_msg_buff[3], sizeof(emk_message_t));
+    TEST_ASSERT_EQUAL_MSG(msg4_converted, _xQueueSendFromISR_msg_buff[3]);
 }

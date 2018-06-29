@@ -16,6 +16,13 @@ typedef enum {
     DRIVER_TYPE_ACTUATOR = 2
 } emk_driver_type_t;
 
+#define DEBUG_DRIVER_TYPE(theType) \
+    switch((theType)) {\
+        case DRIVER_TYPE_INGESTOR: printf("DRIVER_TYPE_INGESTOR"); break;\
+        case DRIVER_TYPE_ACTUATOR: printf("DRIVER_TYPE_ACTUATOR"); break;\
+        default: printf("Unknown DRIVER TYPE of %d", (theType)); break;\
+    }
+
 typedef enum {
     MIDDLEWARE_RESULT_NOT_HANDLED = 0,
     MIDDLEWARE_RESULT_HANDLED = 1

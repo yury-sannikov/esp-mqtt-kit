@@ -1,6 +1,7 @@
 #ifndef __ESP_MQTT_KIT_DATATYPES_H__
 #define __ESP_MQTT_KIT_DATATYPES_H__
 #include <stdint.h>
+#include <stdio.h>
 #include "mqttkit/address.h"
 
 struct _emk_data;
@@ -27,13 +28,13 @@ struct _emk_data {
     } of;
 };
 
-#define DUMP_DATA(theMsg, theData) \
-    printf("%s Type: %d, ", (theMsg), (theData).type); \
+#define DEBUG_DATA(theMsg, theData) \
+    DEBUG_NL("%s", (theMsg)); \
     switch((theData).type) { \
-        case DATA_TYPE_INVALID: printf("Invalid\n"); break; \
-        case DATA_TYPE_GPIO: printf("GPIO num: %d, gval: %d\n", (theData).of.gpio.gpio_num, (theData).of.gpio.gpio_val); break; \
-        case DATA_TYPE_B8: printf("BYTE8: %d\n", (theData).of.b8); break; \
-        default: printf("TODO: Add type to the switch\n"); break; \
+        case DATA_TYPE_INVALID: printf("`Invalid`\n"); break; \
+        case DATA_TYPE_GPIO: printf("GPIO=%d, VAL=%d\n", (theData).of.gpio.gpio_num, (theData).of.gpio.gpio_val); break; \
+        case DATA_TYPE_B8: printf("BYTE8=%d\n", (theData).of.b8); break; \
+        default: printf("TODO: Add type to the switch %d\n", (theData).type); break; \
     }
 
 #endif //__ESP_MQTT_KIT_DATATYPES_H__

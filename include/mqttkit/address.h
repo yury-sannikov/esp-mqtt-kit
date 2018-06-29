@@ -102,12 +102,18 @@ union _emk_address {
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0')
 
-#define PRINT_ADDR(theMsg, theAddr) \
-    printf("%s [Address: %c.%X, Group: "BYTE_TO_BINARY_PATTERN"]\n", \
-        (theMsg), \
-        (theAddr).f.command_status == 1 ? 'c': 's', \
-        (theAddr).f.address, \
-        BYTE_TO_BINARY((theAddr).f.group_mask) \
-    );
+#define DEBUG_ADDR(theMsg, theAddr) \
+    if (EMK_IS_SYSTEM_ADDR(theAddr)) { \
+        DEBUG_NL("SYSADDR "); \
+        DEBUG_DRIVER_TYPE((theAddr).s.driver_type); \
+    } \
+    else { \
+        DEBUG_NL("%s[%s/%X at "BYTE_TO_BINARY_PATTERN"]", \
+            (theMsg), \
+            (theAddr).f.command_status == 1 ? "cmd": "st", \
+            (theAddr).f.address, \
+            BYTE_TO_BINARY((theAddr).f.group_mask) \
+        ); \
+    }
 
 #endif //__ESP_MQTT_KIT_ADDRESS_H__

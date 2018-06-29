@@ -19,6 +19,11 @@ int receiver_task( void *pvParameters )
     emk_context_t context;
     for( ;; ) {
         if (xQueueReceive(pb->irq_block->queue, &msg, LOGIC_TIMER_RESOLUTION_MS / portTICK_PERIOD_MS)) {
+            DEBUG("");
+            DEBUG_NL("receiver_task ");
+            DEBUG_ADDR("", msg.address);
+            DEBUG_DATA("", msg.data);
+
             emk_context_init(&context, &msg.address);
 
             if (MIDDLEWARE_RESULT_HANDLED != emk_invoke_driver_middleware(pb->config, &msg, &context)) {

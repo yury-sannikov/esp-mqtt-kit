@@ -12,6 +12,8 @@ struct _emk_message {
     emk_data_t data;
 };
 
-
+#define TEST_ASSERT_EQUAL_MSG(theExpected, theActual) \
+    TEST_ASSERT_EQUAL_MEMORY(&((theExpected).address), &((theActual).address), sizeof(emk_address_t)); \
+    TEST_ASSERT_EQUAL_MEMORY(&((theExpected).data), &((theActual).data), sizeof(emk_data_t));
 
 #endif //__ESP_MQTT_KIT_MESSAGE_H__

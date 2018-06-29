@@ -44,7 +44,7 @@ emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_confi
             if (actuator->type != ACTUATOR_TYPE_GPIO) {
                 continue;
             }
-            if (SAME_ADDRESS(message->address, actuator->address)) {
+            if (!SAME_ADDRESS(message->address, actuator->address)) {
                 continue;
             }
             const emk_gpio_actuator_configuration* cfg = (const emk_gpio_actuator_configuration*)actuator->config;
@@ -57,6 +57,10 @@ emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_confi
                     continue;
                 }
             }
+            DEBUG("gpio_actuator__message_middleware");
+            DEBUG("`%s` %s", actuator->name, value != 0 ? "ON" : "OFF")
+            DEBUG_ADDR("A ", message->address);
+            DEBUG_DATA("D ", message->data);
 
             gpio_write(cfg->gpio, value != 0);
         }
