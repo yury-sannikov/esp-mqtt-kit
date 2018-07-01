@@ -90,3 +90,8 @@ void gpio_write(const uint8_t gpio_num, const bool set) {
     _gpio_write__gpio_num = gpio_num;
     _gpio_write__set = set;
 }
+
+void _gpio_write_clear() {
+    _gpio_write__gpio_num = 0;
+    _gpio_write__set = false;
+}

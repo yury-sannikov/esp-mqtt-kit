@@ -83,8 +83,6 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
                 };
                 DEBUG_NL("gpio_ingestor__message_middleware");
                 DEBUG("`%s`", ingestor->name)
-                DEBUG_ADDR("", msg.address);
-                DEBUG_DATA("", msg.data);
 
                 // Send message by making copy of it. Use active group if address has no group in it
                 emk_context_send(context, &msg);

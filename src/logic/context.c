@@ -22,6 +22,10 @@ void emk_context_send(emk_context_t* context, const emk_message_t* message) {
     }
 }
 
+void emk_context_consume(emk_context_t* context) {
+    context->message_consumed = true;
+}
+
 void emk_context_cleanup(emk_context_t* context) {
     if (!context->message_consumed) {
         if (EMK_IS_SYSTEM_ADDR(context->source_address)) {

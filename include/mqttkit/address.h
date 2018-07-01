@@ -108,7 +108,7 @@ union _emk_address {
         DEBUG_DRIVER_TYPE((theAddr).s.driver_type); \
     } \
     else { \
-        DEBUG_NL("%s[%s/%X at "BYTE_TO_BINARY_PATTERN"]", \
+        DEBUG_NL("%s[%s/0x%X at "BYTE_TO_BINARY_PATTERN"]", \
             (theMsg), \
             (theAddr).f.command_status == 1 ? "cmd": "st", \
             (theAddr).f.address, \

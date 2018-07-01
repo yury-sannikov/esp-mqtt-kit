@@ -35,7 +35,6 @@ void gpio_actuator__gpio_iqr_block(emk_gpio_irq_block_t* irq_block, const void* 
 
 emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context) {
     (void)config;
-    (void)context;
 
     for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
         const emk_group_t *group = *group_it;
@@ -57,10 +56,10 @@ emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_confi
                     continue;
                 }
             }
+            emk_context_consume(context);
+
             DEBUG("gpio_actuator__message_middleware");
             DEBUG("`%s` %s", actuator->name, value != 0 ? "ON" : "OFF")
-            DEBUG_ADDR("A ", message->address);
-            DEBUG_DATA("D ", message->data);
 
             gpio_write(cfg->gpio, value != 0);
         }

@@ -17,6 +17,8 @@ void emk_context_init(emk_context_t* context, const emk_address_t* address);
 void emk_context_send(emk_context_t* context, const emk_message_t* message);
 // Check context and give warnings if any
 void emk_context_cleanup(emk_context_t* context);
+// Mark context as consumed. may used in driver middleware
+void emk_context_consume(emk_context_t* context);
 
 
 #endif //__ESP_MQTT_KIT_CONTEXT_H__

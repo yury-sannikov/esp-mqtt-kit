@@ -56,6 +56,6 @@ BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicks
 extern uint8_t _gpio_write__gpio_num;
 extern bool _gpio_write__set;
 void gpio_write(const uint8_t gpio_num, const bool set);
-
+void _gpio_write_clear(void);
 
 #endif //__ESP_MQTT_KIT__TEST_COMMON_H__

@@ -5,20 +5,23 @@
 #include "helpers/testing.h"
 #include "mqttkit/driver.h"
 #include "mqttkit/actuator.h"
+#include "mqttkit/logic.h"
 
 TEST_GROUP_RUNNER(ActuatorConfig)
 {
   RUN_TEST_CASE(ActuatorConfig, emk_abort_on_unknown_actuator_type);
   RUN_TEST_CASE(ActuatorConfig, failing_on_reuse_the_same_ingestor_pin_for_actuator);
-  // RUN_TEST_CASE(ActuatorConfig, emk_add_gpio_ingestors_fail_on_having_reserved_gpio);
-  // RUN_TEST_CASE(ActuatorConfig, emk_add_gpio_ingestors_fail_on_large_gpio);
-  // RUN_TEST_CASE(ActuatorConfig, emk_add_gpio_ingestors_check_irq_setup);
+  RUN_TEST_CASE(ActuatorConfig, actuator_process_message_address_match);
 }
+
+emk_task_parameter_block_t parameter_block;
 
 TEST_GROUP(ActuatorConfig);
 TEST_SETUP(ActuatorConfig)
 {
   clearAbort();
+  _gpio_write_clear();
+  parameter_block.irq_block = &__gpio_irq_block;
 }
 
 TEST_TEAR_DOWN(ActuatorConfig)
@@ -96,98 +99,91 @@ TEST(ActuatorConfig, failing_on_reuse_the_same_ingestor_pin_for_actuator)
   TEST_ASSERT_EQUAL(1, getAbortsCount());
 }
 
-// TEST(IngestorConfig, emk_add_gpio_ingestors_fail_on_large_gpio)
-// {
-//   // Create GPIO ingestors and add config (reuse pin)
-//   const emk_ingestor_t *ingestor_data[] = {
-//       GPIO_INGESTOR("pin1",
-//         .address=EMK_COMMAND_ADDR(1),
-//         .config=GPIO_INGESTOR_CFG(
-//           .gpio = 33,
-//           .edge = EMK_GPIO_EDGE_POS
-//         )
-//       ),
-//       GPIO_INGESTOR("pin2",
-//         .address=EMK_COMMAND_ADDR(1),
-//         .config=GPIO_INGESTOR_CFG(
-//           .gpio = 16,
-//           .edge = EMK_GPIO_EDGE_POS
-//         )
-//       ),
-//       NULL
-//   };
+TEST(ActuatorConfig, actuator_process_message_address_match) {
 
-//   const emk_group_t *groups[] = {
-//     MAKE_GROUP("main", 1,
-//       .ingestors = ingestor_data
-//     ),
-//     NULL
-//   };
+  const emk_ingestor_t *ingestor_data[] = {
+    NULL
+  };
 
-//   emk_config_t config = {
-//     .groups = groups,
-//     .reserved_pins = 0
-//   };
+  const emk_actuator_t *actuator_data[] = {
+      &(emk_actuator_t) {
+          .name="relay",
+          .type=ACTUATOR_TYPE_GPIO,
+          .address=EMK_COMMAND_ADDR(25),
+          .config=GPIO_ACTUATOR_CFG(
+            .gpio = 7
+          )
+      },
+      NULL
+  };
 
-//   _create_gpio_irq_block(&config);
-//   TEST_ASSERT_EQUAL(2, getAbortsCount());
+  const emk_group_t *groups[] = {
+    MAKE_GROUP("main", 1,
+      .ingestors = ingestor_data,
+      .actuators = actuator_data
+    ),
+    NULL
+  };
 
-// }
+  emk_config_t config = {
+    .groups = groups,
+    .reserved_pins = 0
+  };
 
-// TEST(IngestorConfig, emk_add_gpio_ingestors_check_irq_setup)
-// {
-//   const emk_ingestor_t *ingestor_data[] = {
-//       GPIO_INGESTOR("pin1",
-//         .address=EMK_COMMAND_ADDR(1),
-//         .config=GPIO_INGESTOR_CFG(
-//           .gpio = 1,
-//           .edge = EMK_GPIO_EDGE_POS
-//         )
-//       ),
-//       GPIO_INGESTOR("pin2",
-//         .address=EMK_COMMAND_ADDR(1),
-//         .config=GPIO_INGESTOR_CFG(
-//           .gpio = 3,
-//           .edge = EMK_GPIO_EDGE_BOTH,
-//           .debounce = 100
-//         )
-//       ),
-//       NULL
-//   };
+  _gpio_write_clear();
+  _create_gpio_irq_block(&config);
 
-//   const emk_group_t *groups[] = {
-//     MAKE_GROUP("main", 1,
-//       .ingestors = ingestor_data
-//     ),
-//     NULL
-//   };
+  TEST_ASSERT_EQUAL(0, hasAbort());
 
-//   emk_config_t config = {
-//     .groups = groups,
-//     .reserved_pins = 0
-//   };
+  emk_message_t msg_wrong = {
+    .address = EMK_COMMAND_ADDR(1),
+    .data = (emk_data_t) {
+        .type = DATA_TYPE_GPIO,
+        .of.b8 = 1
+    }
+  };
 
-//   RETAINED_PTR emk_gpio_irq_block_t* iblock = _create_gpio_irq_block(&config);
-//   TEST_ASSERT_EQUAL_INT16(BIT(1) | BIT(3), iblock->active_pins);
-//   TEST_ASSERT_EQUAL_INT16(BIT(1)| BIT(3), iblock->pos_edge);
-//   TEST_ASSERT_EQUAL_INT16(BIT(3), iblock->neg_edge);
-//   TEST_ASSERT_EQUAL_INT32(0, iblock->last_irq[0]);
-//   TEST_ASSERT_EQUAL_INT32(IRQ_LAST_TRIGGERED_DEFAULT_TIME, iblock->last_irq[1]);
-//   TEST_ASSERT_EQUAL_INT32(0, iblock->last_irq[2]);
-//   TEST_ASSERT_EQUAL_INT32(IRQ_LAST_TRIGGERED_DEFAULT_TIME, iblock->last_irq[3]);
+  _xQueueReceive_pvBuffer = &msg_wrong;
+  _xQueueReceive_retval = 1;
 
-//   TEST_ASSERT_EQUAL_INT32(0, iblock->debouce_values[0]);
-//   TEST_ASSERT_EQUAL_INT32(50 / portTICK_PERIOD_MS, iblock->debouce_values[1]);
-//   TEST_ASSERT_EQUAL_INT32(0, iblock->debouce_values[2]);
-//   TEST_ASSERT_EQUAL_INT32(100 / portTICK_PERIOD_MS, iblock->debouce_values[3]);
+  __gpio_irq_block.queue = 1;
+  parameter_block.config = &config;
+  parameter_block.irq_block = &__gpio_irq_block;
+  receiver_task(&parameter_block);
+  TEST_ASSERT_EQUAL(0, hasAbort());
 
-//   test_clear_gpio_set_interrupt();
-//   _register_interrupt_handlers(iblock);
+  TEST_ASSERT_EQUAL(0, _gpio_write__gpio_num);
+  TEST_ASSERT_EQUAL(0, _gpio_write__set);
 
-//   // gpio_set_interrupt should be called twice for 1 and 3 pin
-//   assert_gpio_set_interrupt(BIT(1) | BIT(3), 2);
-// }
+  emk_message_t msg_okay_on = {
+    .address = EMK_COMMAND_ADDR(25),
+    .data = (emk_data_t) {
+        .type = DATA_TYPE_B8,
+        .of.b8 = 1
+    }
+  };
 
+  _xQueueReceive_pvBuffer = &msg_okay_on;
+  _xQueueReceive_retval = 1;
+  receiver_task(&parameter_block);
 
+  TEST_ASSERT_EQUAL(7, _gpio_write__gpio_num);
+  TEST_ASSERT_EQUAL(1, _gpio_write__set);
+  _gpio_write_clear();
 
+  emk_message_t msg_okay_off = {
+    .address = EMK_COMMAND_ADDR(25),
+    .data = (emk_data_t) {
+        .type = DATA_TYPE_B8,
+        .of.b8 = 0
+    }
+  };
 
+  _xQueueReceive_pvBuffer = &msg_okay_off;
+  _xQueueReceive_retval = 1;
+  receiver_task(&parameter_block);
+
+  TEST_ASSERT_EQUAL(7, _gpio_write__gpio_num);
+  TEST_ASSERT_EQUAL(0, _gpio_write__set);
+  _gpio_write_clear();
+}
