@@ -95,3 +95,22 @@ void _gpio_write_clear() {
     _gpio_write__gpio_num = 0;
     _gpio_write__set = false;
 }
+
+
+emk_message_t _xQueueSend_buff[xQueueSend_SIZE];
+int _xQueueSend_buff_idx  = 0;
+BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_t xTicksToWait) {
+    (void)xTicksToWait;
+    (void)xQueue;
+    memcpy(&_xQueueSend_buff[_xQueueSend_buff_idx++], pvItemToQueue, sizeof(emk_message_t));
+    if (_xQueueSend_buff_idx >= xQueueSend_SIZE) {
+        _xQueueSend_buff_idx = 0;
+    }
+    return pdTRUE;
+
+}
+
+void _xQueueSend_clear(void) {
+    memset(&_xQueueSend_buff, 0, sizeof(emk_message_t) * xQueueSend_SIZE);
+    _xQueueSend_buff_idx  = 0;
+}

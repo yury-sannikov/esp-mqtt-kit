@@ -49,6 +49,12 @@ extern int _xQueueSendFromISR_msg_buff_idx;
 BaseType_t xQueueSendFromISR(QueueHandle_t xQueue, const void *pvItemToQueue, BaseType_t *pxHigherPriorityTaskWoken);
 void _xQueueSendFromISR_clear(void);
 
+#define xQueueSend_SIZE 50
+extern emk_message_t _xQueueSend_buff[xQueueSend_SIZE];
+extern int _xQueueSend_buff_idx;
+BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_t xTicksToWait);
+void _xQueueSend_clear(void);
+
 extern const emk_message_t* _xQueueReceive_pvBuffer;
 extern BaseType_t _xQueueReceive_retval;
 BaseType_t xQueueReceive(QueueHandle_t xQueue, void *pvBuffer, TickType_t xTicksToWait);

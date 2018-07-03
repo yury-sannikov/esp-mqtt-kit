@@ -22,7 +22,7 @@ TEST_GROUP(RECEIVER_TASK);
 TEST_SETUP(RECEIVER_TASK)
 {
   clearAbort();
-  _xQueueSendFromISR_clear();
+  _xQueueSend_clear();
 
   parameter_block.irq_block = &__gpio_irq_block;
 }
@@ -98,9 +98,9 @@ TEST(RECEIVER_TASK, middleware_should_process_system_message) {
         }
     };
 
-    TEST_ASSERT_EQUAL_MSG(msg_converted, _xQueueSendFromISR_msg);
+    TEST_ASSERT_EQUAL_MSG(msg_converted, _xQueueSend_buff[0]);
 
-    _xQueueSendFromISR_clear();
+    _xQueueSend_clear();
 
     // A message for non-confgiured GPIO should not result in any message generation
     emk_message_t msg2 = {
@@ -120,7 +120,7 @@ TEST(RECEIVER_TASK, middleware_should_process_system_message) {
     emk_message_t zeroMessage;
     memset(&zeroMessage, 0, sizeof(emk_message_t));
 
-    TEST_ASSERT_EQUAL_MSG(zeroMessage, _xQueueSendFromISR_msg);
+    TEST_ASSERT_EQUAL_MSG(zeroMessage, _xQueueSend_buff[0]);
 
 }
 
@@ -217,7 +217,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
     memcpy(&msg_replay, &_xQueueSendFromISR_msg_buff, sizeof(emk_message_t[2]));
 
     // Forward these 2 messages to the middleware
-    _xQueueSendFromISR_clear();
+    _xQueueSend_clear();
 
     _xQueueReceive_pvBuffer = &msg_replay[0];
     _xQueueReceive_retval = 1;
@@ -228,7 +228,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
 
     // Receiver task will create 4 messages
     // pin1 pos, pin1 both for positive, pin1 neg, pin1 both for negative
-    TEST_ASSERT_EQUAL(4, _xQueueSendFromISR_msg_buff_idx);
+    TEST_ASSERT_EQUAL(4, _xQueueSend_buff_idx);
 
     // Pin1 Pos receives 1
     emk_message_t msg1_converted = {
@@ -238,7 +238,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 1
         }
     };
-    TEST_ASSERT_EQUAL_MSG(msg1_converted, _xQueueSendFromISR_msg_buff[0]);
+    TEST_ASSERT_EQUAL_MSG(msg1_converted, _xQueueSend_buff[0]);
 
     // Pin1 Both receives 1
     emk_message_t msg2_converted = {
@@ -248,7 +248,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 1
         }
     };
-    TEST_ASSERT_EQUAL_MSG(msg2_converted, _xQueueSendFromISR_msg_buff[1]);
+    TEST_ASSERT_EQUAL_MSG(msg2_converted, _xQueueSend_buff[1]);
 
     // Pin1 neg receives 0
     emk_message_t msg3_converted = {
@@ -258,7 +258,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 0
         }
     };
-    TEST_ASSERT_EQUAL_MSG(msg3_converted, _xQueueSendFromISR_msg_buff[2]);
+    TEST_ASSERT_EQUAL_MSG(msg3_converted, _xQueueSend_buff[2]);
 
     // Pin1 both receives 0
     emk_message_t msg4_converted = {
@@ -268,5 +268,5 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 0
         }
     };
-    TEST_ASSERT_EQUAL_MSG(msg4_converted, _xQueueSendFromISR_msg_buff[3]);
+    TEST_ASSERT_EQUAL_MSG(msg4_converted, _xQueueSend_buff[3]);
 }
