@@ -110,6 +110,22 @@ BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_
 
 }
 
+bool _xQueueSend_unshift(emk_message_t* dst_message) {
+    if (_xQueueSend_buff_idx == 0) {
+        return false;
+    }
+    --_xQueueSend_buff_idx;
+    // Copy result from the earlies message available
+    memcpy(dst_message, &_xQueueSend_buff[0], sizeof(emk_message_t));
+    // Return if nothing left to move
+    if (_xQueueSend_buff_idx == 0) {
+        return true;
+    }
+    // Shift messages. Overlapping is fine here
+    memcpy(&_xQueueSend_buff[0], &_xQueueSend_buff[1], sizeof(emk_message_t) * _xQueueSend_buff_idx);
+    return true;
+}
+
 void _xQueueSend_clear(void) {
     memset(&_xQueueSend_buff, 0, sizeof(emk_message_t) * xQueueSend_SIZE);
     _xQueueSend_buff_idx  = 0;

@@ -57,6 +57,10 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
 
     for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
         const emk_group_t *group = *group_it;
+        if (group->ingestors == NULL) {
+            ABORT("Null ingestors in group %s", group->name);
+            return MIDDLEWARE_RESULT_NOT_HANDLED;
+        }
         for (const emk_ingestor_t **ingestor_it = group->ingestors; *ingestor_it; ingestor_it++) {
             const emk_ingestor_t *ingestor = *ingestor_it;
             if (ingestor->type != INGESTOR_TYPE_GPIO) {

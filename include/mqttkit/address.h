@@ -16,6 +16,11 @@ union _emk_address {
         // Zero value means current group
         uint32_t group_mask : 16;
     } f;
+    // User address comparable
+    struct {
+        uint32_t command_with_address : 16;
+        uint32_t group_mask : 16;
+    } c;
     // System address
     struct {
         // Should contain zeros
@@ -28,6 +33,13 @@ union _emk_address {
 
 // Check if 2 addresses are equal
 #define SAME_ADDRESS(addrOne, addrTwo) ((addrOne).v == (addrTwo).v)
+
+// Check if 2 addresses are equal. Second address might contain default group
+// Address & group should match, or addrTwoGroupDefault should have 0 group
+#define SAME_ADDRESS_DEFAULT_GROUP(addrOne, addrTwoDef) ( \
+    ((addrOne).c.command_with_address == (addrTwoDef).c.command_with_address) && ( \
+    ((addrOne).c.group_mask == (addrTwoDef).c.group_mask) || \
+    ((addrTwoDef).c.group_mask == 0)))
 
 // Copy addrSrc to addrDst and assign group_mask from groupSrc if it was not set
 #define EMK_ADDRESS_MERGE_WITH_GROUP(addrDst, addrSrc, groupSrc) \

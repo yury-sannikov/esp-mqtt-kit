@@ -54,6 +54,7 @@ extern emk_message_t _xQueueSend_buff[xQueueSend_SIZE];
 extern int _xQueueSend_buff_idx;
 BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_t xTicksToWait);
 void _xQueueSend_clear(void);
+bool _xQueueSend_unshift(emk_message_t* dst_message);
 
 extern const emk_message_t* _xQueueReceive_pvBuffer;
 extern BaseType_t _xQueueReceive_retval;
