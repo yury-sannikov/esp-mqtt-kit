@@ -21,6 +21,7 @@ TEST_SETUP(ActuatorConfig)
 {
   clearAbort();
   _gpio_write_clear();
+  _gpio_enable_clear();
   parameter_block.irq_block = &__gpio_irq_block;
 }
 
@@ -134,6 +135,10 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
   _create_gpio_irq_block(&config);
 
   TEST_ASSERT_EQUAL(0, hasAbort());
+
+  // Check enable_gpio call
+  TEST_ASSERT_EQUAL_INT8(7, _gpio_enable_gpio_num);
+  TEST_ASSERT_EQUAL_INT8(GPIO_OUTPUT, _gpio_enable_direction);
 
   emk_message_t msg_wrong = {
     .address = EMK_COMMAND_ADDR(1),

@@ -25,6 +25,18 @@ typedef uint32_t BaseType_t;
 #define errQUEUE_EMPTY	( ( BaseType_t ) 0 )
 #define errQUEUE_FULL	( ( BaseType_t ) 0 )
 
+typedef enum {
+    GPIO_INPUT,
+    GPIO_OUTPUT,         /* "Standard" push-pull output */
+    GPIO_OUT_OPEN_DRAIN, /* Open drain output */
+    GPIO_NOT_SET = 0xFF
+} gpio_direction_t;
+
+void gpio_enable(const uint8_t gpio_num, const gpio_direction_t direction);
+void _gpio_enable_clear(void);
+extern uint8_t _gpio_enable_gpio_num;
+extern gpio_direction_t _gpio_enable_direction;
+
 extern int _gpio_isr_status;
 void _set_gpio_isr_status(int status);
 #define SET_GPIO_ISR_STATUS(status) _set_gpio_isr_status((status));

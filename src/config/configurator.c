@@ -47,7 +47,7 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
             }
             // GPIO ingestor can effectively reuse pins so supply only reserved_pins as an input
             uint16_t pins = cfg->reserved_pins;
-            driver->check_gpio(&pins, ingestor, group, cfg);
+            driver->init_gpio(&pins, ingestor, group, cfg);
             // Collect used pins for actuators
             used_pins |= pins;
 
@@ -63,7 +63,7 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
                 return NULL;
             }
             // Actuators can not reuse pins
-            driver->check_gpio(&used_pins, actuator, group, cfg);
+            driver->init_gpio(&used_pins, actuator, group, cfg);
         }
 
     }

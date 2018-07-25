@@ -130,3 +130,15 @@ void _xQueueSend_clear(void) {
     memset(&_xQueueSend_buff, 0, sizeof(emk_message_t) * xQueueSend_SIZE);
     _xQueueSend_buff_idx  = 0;
 }
+
+
+uint8_t _gpio_enable_gpio_num;
+gpio_direction_t _gpio_enable_direction;
+void gpio_enable(const uint8_t gpio_num, const gpio_direction_t direction) {
+    _gpio_enable_gpio_num = gpio_num;
+    _gpio_enable_direction = direction;
+}
+void _gpio_enable_clear() {
+    _gpio_enable_gpio_num = 0;
+    _gpio_enable_direction = GPIO_NOT_SET;
+}

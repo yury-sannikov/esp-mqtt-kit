@@ -7,7 +7,7 @@
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
 
-void gpio_actuator__check_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config) {
+void gpio_actuator__init_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config) {
     (void)config;
 
     const emk_actuator_t* actuator = (const emk_actuator_t*)driver;
@@ -24,7 +24,8 @@ void gpio_actuator__check_gpio(uint16_t* used_pins, const void* driver, const em
         return;
     }
     *used_pins |= pin_m;
-
+    // Enable this pin for output, todo: config for opendrain
+    gpio_enable(cfg->gpio, GPIO_OUTPUT);
 }
 
 void gpio_actuator__gpio_iqr_block(emk_gpio_irq_block_t* irq_block, const void* driver) {

@@ -7,7 +7,7 @@
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
 
-void gpio_ingestor__check_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config) {
+void gpio_ingestor__init_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config) {
     (void)config;
     const emk_ingestor_t* ingestor = (const emk_ingestor_t*)driver;
     const emk_gpio_ingestor_configuration* cfg = (const emk_gpio_ingestor_configuration*)ingestor->config;
@@ -22,6 +22,8 @@ void gpio_ingestor__check_gpio(uint16_t* used_pins, const void* driver, const em
         return;
     }
     *used_pins |= pin_m;
+    // Enable this pin for input
+    gpio_enable(cfg->gpio, GPIO_INPUT);
 }
 
 void gpio_ingestor__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const void* driver) {

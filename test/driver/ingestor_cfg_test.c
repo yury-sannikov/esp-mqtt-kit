@@ -18,6 +18,7 @@ TEST_GROUP(IngestorConfig);
 TEST_SETUP(IngestorConfig)
 {
   clearAbort();
+  _gpio_enable_clear();
 }
 
 TEST_TEAR_DOWN(IngestorConfig)
@@ -196,6 +197,10 @@ TEST(IngestorConfig, emk_add_gpio_ingestors_check_irq_setup)
   TEST_ASSERT_EQUAL_INT32(50 / portTICK_PERIOD_MS, iblock->debouce_values[1]);
   TEST_ASSERT_EQUAL_INT32(0, iblock->debouce_values[2]);
   TEST_ASSERT_EQUAL_INT32(100 / portTICK_PERIOD_MS, iblock->debouce_values[3]);
+
+  // Check enable_gpio call (register only second ingestor)
+  TEST_ASSERT_EQUAL_INT8(3, _gpio_enable_gpio_num);
+  TEST_ASSERT_EQUAL_INT8(GPIO_INPUT, _gpio_enable_direction);
 
   test_clear_gpio_set_interrupt();
   _register_interrupt_handlers(iblock);
