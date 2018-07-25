@@ -4,7 +4,7 @@
 #include "mqttkit/driver.h"
 #include "mqttkit/message.h"
 
-uint32_t IRAM __gpio_isr_queue_overflow_counter = 0;
+uint32_t __gpio_isr_queue_overflow_counter = 0;
 
 void IRAM _send_status(uint8_t gpio_num, bool value);
 void IRAM gpio_ingestor_interrupt_handler(uint8_t gpio_num) {

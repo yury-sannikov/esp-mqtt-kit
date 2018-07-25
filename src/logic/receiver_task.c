@@ -6,6 +6,7 @@
 
 int receiver_task( void *pvParameters )
 {
+    DEBUG_NL("receiver_task started");
     const emk_task_parameter_block_t* pb = (const emk_task_parameter_block_t*)pvParameters;
     if (!pb) {
         ABORT("receiver_task has null parameter block received");

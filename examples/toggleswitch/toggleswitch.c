@@ -1,58 +1,71 @@
 #include <stdio.h>
-#include <esp8266.h>
-#include <FreeRTOS.h>
-#include "esp/uart.h"
 #include <mqttkit/mqttkit.h>
 
-// #include "espressif/esp_common.h"
-#include "task.h"
-#include "queue.h"
+/*
+const uint8_t D0   = 16;
+const uint8_t D1   = 5;
+const uint8_t D2   = 4;
+const uint8_t D3   = 0;
+const uint8_t D4   = 2;
+const uint8_t D5   = 14;
+const uint8_t D6   = 12;
+const uint8_t D7   = 13;
+const uint8_t D8   = 15;
+const uint8_t D9   = 3;
+const uint8_t D10  = 1;
+*/
 
-//TODO: https://github.com/drasko/esp-open-rtos-examples/blob/master/mainflux_button/mainflux_button.c
-
-void ingestor_init(void) {
-    printf("Ingestor init called");
-}
-
-const int gpioinp = 5; // D1
-const gpio_inttype_t int_type = GPIO_INTTYPE_EDGE_POS;
-void gpio_intr_handler(uint8_t gpio_num);
-
-void buttonIntTask(void *pvParameters)
-{
-    printf("Waiting for button press interrupt on gpio %d...\r\n", gpioinp);
-    QueueHandle_t *tsqueue = (QueueHandle_t *)pvParameters;
-    gpio_set_interrupt(gpioinp, int_type, gpio_intr_handler);
-
-    uint32_t last = 0;
-    while(1) {
-        uint32_t button_ts;
-        xQueueReceive(*tsqueue, &button_ts, portMAX_DELAY);
-        button_ts *= portTICK_PERIOD_MS;
-        printf("INTR at %dms\r\n", button_ts);
-        if(last < button_ts-200) {
-            printf("Button interrupt fired at %dms\r\n", button_ts);
-            last = button_ts;
-        }
-    }
-}
-
-static QueueHandle_t tsqueue;
-
-void gpio_intr_handler(uint8_t gpio_num)
-{
-    uint32_t now = xTaskGetTickCountFromISR();
-    xQueueSendToBackFromISR(tsqueue, &now, NULL);
-}
+// D1, Button ON, generate message on positive edge
+ uint8_t GPIO_BUTTON_ON = 5;
+// D2, Button OFF, generate message on negative edge, use the same logic address
+const uint8_t GPIO_BUTTON_OFF = 4;
+// D7, LED with state
+const uint8_t GPIO_LED = 13;
 
 
 void user_init(void) {
-    uart_set_baud(0, 115200);
+    const emk_ingestor_t *ingestor_data[] = {
+        GPIO_INGESTOR("button ON",
+            .address=EMK_COMMAND_ADDR(1),
+            .config=GPIO_INGESTOR_CFG(
+                .gpio = GPIO_BUTTON_ON,
+                .edge = EMK_GPIO_EDGE_POS,
+                .debounce = 50
+            )
+        ),
+        GPIO_INGESTOR("button OFF",
+            .address=EMK_COMMAND_ADDR(1),
+            .config=GPIO_INGESTOR_CFG(
+                .gpio = GPIO_BUTTON_OFF,
+                .edge = EMK_GPIO_EDGE_NEG,
+                .debounce = 50
+            )
+        ),
+        NULL
+    };
 
-    mqtt_kit_init(NULL);
+    const emk_actuator_t *actuator_data[] = {
+        GPIO_ACTUATOR("Controlled LED",
+            .address=EMK_COMMAND_ADDR(1),
+            .config=GPIO_ACTUATOR_CFG(
+                .gpio = GPIO_LED
+            )
+        ),
+        NULL
+    };
 
-    gpio_enable(gpioinp, GPIO_INPUT);
-    tsqueue = xQueueCreate(20, sizeof(uint32_t));
-    xTaskCreate(buttonIntTask, "buttonIntTask", 256, &tsqueue, 2, NULL);
+    const emk_group_t *groups[] = {
+        MAKE_GROUP("main", 1,
+            .ingestors = ingestor_data,
+            .actuators = actuator_data
+        ),
+        NULL
+    };
 
+    emk_config_t config = {
+        .groups = groups,
+        .reserved_pins = 0
+    };
+
+    mqtt_kit_init(&config);
 }

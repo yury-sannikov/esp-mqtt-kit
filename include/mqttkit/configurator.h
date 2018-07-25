@@ -52,4 +52,6 @@ RETAINED_PTR emk_gpio_irq_block_t*  _create_gpio_irq_block(const emk_config_t* c
 // register interrupt handlers according to the emk_gpio_irq_block_t values
 void _register_interrupt_handlers(const RETAINED_PTR emk_gpio_irq_block_t* block);
 
+void emk_initialize(const emk_config_t* cfg);
+
 #endif // __ESP_MQTT_KIT_CFG_H__
