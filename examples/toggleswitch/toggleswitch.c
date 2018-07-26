@@ -1,26 +1,24 @@
 #include <stdio.h>
 #include <mqttkit/mqttkit.h>
 
-/*
-const uint8_t D0   = 16;
-const uint8_t D1   = 5;
-const uint8_t D2   = 4;
-const uint8_t D3   = 0;
-const uint8_t D4   = 2;
-const uint8_t D5   = 14;
-const uint8_t D6   = 12;
-const uint8_t D7   = 13;
-const uint8_t D8   = 15;
-const uint8_t D9   = 3;
-const uint8_t D10  = 1;
-*/
+#define D0  16
+#define D1  5
+#define D2  4
+#define D3  0
+#define D4  2
+#define D5  14
+#define D6  12
+#define D7  13
+#define D8  15
+#define D9  3
+#define D10 1
 
 // D1, Button ON, generate message on positive edge
- uint8_t GPIO_BUTTON_ON = 5;
+ uint8_t GPIO_BUTTON_ON = D1;
 // D2, Button OFF, generate message on negative edge, use the same logic address
-const uint8_t GPIO_BUTTON_OFF = 4;
+const uint8_t GPIO_BUTTON_OFF = D2;
 // D7, LED with state
-const uint8_t GPIO_LED = 13;
+const uint8_t GPIO_LED = D7;
 
 
 void user_init(void) {

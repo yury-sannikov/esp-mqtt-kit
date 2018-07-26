@@ -68,7 +68,7 @@ struct _emk_driver {
 const emk_driver_t* emk_get_driver(emk_driver_type_t type, uint16_t subtype);
 
 // Declare emk_gpio_irq_block_t global variable to be accessible from ISR
-extern IRAM_DATA emk_gpio_irq_block_t  __gpio_irq_block;
+extern emk_gpio_irq_block_t  __gpio_irq_block;
 
 // Driver isr for gpio ingestor
 void IRAM gpio_ingestor_interrupt_handler(uint8_t gpio_num);

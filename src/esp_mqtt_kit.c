@@ -33,7 +33,7 @@ void mqtt_kit_init(const emk_config_t *config)
 
     DEBUG("calling xTaskCreate");
     BaseType_t xReturned = xTaskCreate(receiver_task, "receiver_task", 768, &receiver_task_parameter_block, 2, NULL);
-    if( xReturned == pdPASS )
+    if( xReturned != pdPASS )
     {
         ABORT("unable to start receiver_task");
     }

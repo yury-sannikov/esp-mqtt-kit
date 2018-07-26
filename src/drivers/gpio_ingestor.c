@@ -54,17 +54,29 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
     if (!EMK_IS_SYSTEM_ADDR(message->address) || message->address.s.driver_type != DRIVER_TYPE_INGESTOR) {
         return MIDDLEWARE_RESULT_NOT_HANDLED;
     }
-
+    printf("gpio_ingestor__message_middleware: before gpio_data\n");
     const emk_gpio_data_t* gpio_data = &message->data.of.gpio;
+    printf("gpio_ingestor__message_middleware: after gpio_data, val: %d, num: %d\n", gpio_data->gpio_val, gpio_data->gpio_num);
+
+    printf("gpio_ingestor__message_middleware: config %p\n", config);
+    printf("gpio_ingestor__message_middleware: config->groups %p\n", config->groups);
 
     for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
         const emk_group_t *group = *group_it;
+
+        printf("gpio_ingestor__message_middleware: group %p\n", group);
+        printf("gpio_ingestor__message_middleware: group->ingestors %p\n", group->ingestors);
+
         if (group->ingestors == NULL) {
             ABORT("Null ingestors in group %s", group->name);
             return MIDDLEWARE_RESULT_NOT_HANDLED;
         }
         for (const emk_ingestor_t **ingestor_it = group->ingestors; *ingestor_it; ingestor_it++) {
             const emk_ingestor_t *ingestor = *ingestor_it;
+
+            printf("gpio_ingestor__message_middleware: ingestor %p\n", ingestor);
+            printf("gpio_ingestor__message_middleware: ingestor->type %x\n", ingestor->type);
+
             if (ingestor->type != INGESTOR_TYPE_GPIO) {
                 continue;
             }
