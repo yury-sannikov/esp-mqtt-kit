@@ -22,7 +22,7 @@
 
 // Ingestor configurations data.
 // Please do not define it inside user_init, i.e. on a stack
-const emk_ingestor_t *ingestor_data[] = {
+const IRAM_DATA emk_ingestor_t *ingestor_data[] = {
     GPIO_INGESTOR("button ON",
         .address=EMK_COMMAND_ADDR(1),
         .config=GPIO_INGESTOR_CFG(
@@ -43,7 +43,7 @@ const emk_ingestor_t *ingestor_data[] = {
 };
 
 // Actuator configurations data.
-const emk_actuator_t *actuator_data[] = {
+const IRAM_DATA emk_actuator_t *actuator_data[] = {
     GPIO_ACTUATOR("Controlled LED",
         .address=EMK_COMMAND_ADDR(1),
         .config=GPIO_ACTUATOR_CFG(
@@ -54,7 +54,7 @@ const emk_actuator_t *actuator_data[] = {
 };
 
 // Groups data with ingestors and actuators data
-const emk_group_t *groups[] = {
+const IRAM_DATA emk_group_t *groups[] = {
     MAKE_GROUP("main", 0,
         .ingestors = ingestor_data,
         .actuators = actuator_data
