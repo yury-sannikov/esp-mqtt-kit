@@ -39,7 +39,7 @@ struct _emk_ingestor {
     // Ingestor type
     emk_ingestor_type_t type;
     // Address which will be used for status update
-    emk_address_t address;
+    const emk_address_t* address;
     // Ingestor specific configuration
     const void* config;
 };

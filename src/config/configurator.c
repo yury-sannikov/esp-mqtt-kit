@@ -11,16 +11,15 @@ void emk_initialize(const emk_config_t* cfg) {
         ABORT("emk_add_gpio_ingestors has null emk_config_t supplied");
         return;
     }
-  RETAINED_PTR emk_gpio_irq_block_t* iblock = _create_gpio_irq_block(cfg);
+    RETAINED_PTR emk_gpio_irq_block_t* iblock = _create_gpio_irq_block(cfg);
 
-  QueueHandle_t message_queue = xQueueCreate(MAX_MESSAGE_QUEUE_SIZE, sizeof(emk_message_t));
-  iblock->queue = message_queue;
+    QueueHandle_t message_queue = xQueueCreate(MAX_MESSAGE_QUEUE_SIZE, sizeof(emk_message_t));
+    iblock->queue = message_queue;
 
-  _register_interrupt_handlers(iblock);
-
+    _register_interrupt_handlers(iblock);
 }
 
-IRAM_DATA emk_gpio_irq_block_t  __gpio_irq_block;
+emk_gpio_irq_block_t  __gpio_irq_block;
 
 // Go over registered drivers and invoke gpio_iqr_block with `__gpio_irq_block` variable.
 // Return pointer to the `__gpio_irq_block` with all fields set up

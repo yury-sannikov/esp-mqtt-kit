@@ -91,7 +91,7 @@ TEST(RECEIVER_TASK, middleware_should_process_system_message) {
     receiver_task(&parameter_block);
 
     emk_message_t msg_converted = {
-        .address = EMK_GROUP_COMMAND_ADDR(31, 2),
+        .address = *EMK_GROUP_COMMAND_ADDR(31, 2),
         .data = (emk_data_t) {
             .type = DATA_TYPE_B8,
             .of.b8 = msg.data.of.gpio.gpio_val
@@ -232,7 +232,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
 
     // Pin1 Pos receives 1
     emk_message_t msg1_converted = {
-        .address = EMK_GROUP_COMMAND_ADDR(1, 1),
+        .address = *EMK_GROUP_COMMAND_ADDR(1, 1),
         .data = (emk_data_t) {
             .type = DATA_TYPE_B8,
             .of.b8 = 1
@@ -242,7 +242,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
 
     // Pin1 Both receives 1
     emk_message_t msg2_converted = {
-        .address = EMK_GROUP_COMMAND_ADDR(3, 1),
+        .address = *EMK_GROUP_COMMAND_ADDR(3, 1),
         .data = (emk_data_t) {
             .type = DATA_TYPE_B8,
             .of.b8 = 1
@@ -252,7 +252,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
 
     // Pin1 neg receives 0
     emk_message_t msg3_converted = {
-        .address = EMK_GROUP_COMMAND_ADDR(2, 1),
+        .address = *EMK_GROUP_COMMAND_ADDR(2, 1),
         .data = (emk_data_t) {
             .type = DATA_TYPE_B8,
             .of.b8 = 0
@@ -262,7 +262,7 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
 
     // Pin1 both receives 0
     emk_message_t msg4_converted = {
-        .address = EMK_GROUP_COMMAND_ADDR(3, 1),
+        .address = *EMK_GROUP_COMMAND_ADDR(3, 1),
         .data = (emk_data_t) {
             .type = DATA_TYPE_B8,
             .of.b8 = 0

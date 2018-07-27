@@ -54,17 +54,17 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
     if (!EMK_IS_SYSTEM_ADDR(message->address) || message->address.s.driver_type != DRIVER_TYPE_INGESTOR) {
         return MIDDLEWARE_RESULT_NOT_HANDLED;
     }
-
     const emk_gpio_data_t* gpio_data = &message->data.of.gpio;
-
     for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
         const emk_group_t *group = *group_it;
+
         if (group->ingestors == NULL) {
             ABORT("Null ingestors in group %s", group->name);
             return MIDDLEWARE_RESULT_NOT_HANDLED;
         }
         for (const emk_ingestor_t **ingestor_it = group->ingestors; *ingestor_it; ingestor_it++) {
             const emk_ingestor_t *ingestor = *ingestor_it;
+
             if (ingestor->type != INGESTOR_TYPE_GPIO) {
                 continue;
             }
@@ -79,7 +79,7 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
             if (cfg->gpio == gpio_data->gpio_num && should_trigger) {
                 // Add group to the address, if no group has been specified
                 emk_address_t address_with_group;
-                EMK_ADDRESS_MERGE_WITH_GROUP(address_with_group, ingestor->address, *group);
+                EMK_ADDRESS_MERGE_WITH_GROUP(address_with_group, *ingestor->address, *group);
                 emk_message_t msg = {
                     .address = address_with_group,
                     .data = (emk_data_t) {
