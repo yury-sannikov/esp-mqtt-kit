@@ -27,7 +27,7 @@ struct _emk_actuator {
     // Actuator type
     emk_actuator_type_t type;
     // Address which will be used for actuator
-    emk_address_t address;
+    const emk_address_t* address;
     // Actuator specific configuration
     const void* config;
 };

@@ -57,7 +57,7 @@ union _emk_address {
 
 // Create Command address with default group
 #define EMK_COMMAND_ADDR(theAddr) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 1, \
         .f.group_mask = 0 \
@@ -65,7 +65,7 @@ union _emk_address {
 
 // Create Command address with destination group
 #define EMK_GROUP_COMMAND_ADDR(theAddr, grpNum) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 1, \
         .f.group_mask = 1 << grpNum \
@@ -73,7 +73,7 @@ union _emk_address {
 
 // Create Command address with multicast bit group address
 #define EMK_MCAST_COMMAND_ADDR(theAddr, grpMask) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 1, \
         .f.group_mask = grpMask & 0xFFFF \
@@ -81,7 +81,7 @@ union _emk_address {
 
 // Create Status address with default group
 #define EMK_STATUS_ADDR(theAddr) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 0, \
         .f.group_mask = 0 \
@@ -89,7 +89,7 @@ union _emk_address {
 
 // Create Status address with default group
 #define EMK_GROUP_STATUS_ADDR(theAddr, grpNum) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 0, \
         .f.group_mask = 1 < grpNum \
@@ -97,7 +97,7 @@ union _emk_address {
 
 // Create Command address with multicast bit group address
 #define EMK_MCAST_STATUS_ADDR(theAddr, grpMask) \
-    (emk_address_t) { \
+    &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 0, \
         .f.group_mask = grpMask & 0xFFFF \

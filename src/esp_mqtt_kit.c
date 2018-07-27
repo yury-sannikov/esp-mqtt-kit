@@ -16,6 +16,7 @@
 #include "mqttkit/debug.h"
 
 
+emk_task_parameter_block_t receiver_task_parameter_block;
 void receiver_task(void *pvParameters);
 
 void mqtt_kit_init(const emk_config_t *config)
@@ -25,11 +26,8 @@ void mqtt_kit_init(const emk_config_t *config)
     DEBUG("calling emk_initialize");
     emk_initialize(config);
 
-    emk_task_parameter_block_t receiver_task_parameter_block = (emk_task_parameter_block_t){
-        .config = config,
-        .irq_block = &__gpio_irq_block
-    };
-
+    receiver_task_parameter_block.config = config;
+    receiver_task_parameter_block.irq_block = &__gpio_irq_block;
 
     DEBUG("calling xTaskCreate");
     BaseType_t xReturned = xTaskCreate(receiver_task, "receiver_task", 768, &receiver_task_parameter_block, 2, NULL);

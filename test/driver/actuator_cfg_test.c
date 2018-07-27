@@ -141,7 +141,7 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
   TEST_ASSERT_EQUAL_INT8(GPIO_OUTPUT, _gpio_enable_direction);
 
   emk_message_t msg_wrong = {
-    .address = EMK_COMMAND_ADDR(1),
+    .address = *EMK_COMMAND_ADDR(1),
     .data = (emk_data_t) {
         .type = DATA_TYPE_GPIO,
         .of.b8 = 1
@@ -161,7 +161,7 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
   TEST_ASSERT_EQUAL(0, _gpio_write__set);
 
   emk_message_t msg_okay_on = {
-    .address = EMK_COMMAND_ADDR(25),
+    .address = *EMK_COMMAND_ADDR(25),
     .data = (emk_data_t) {
         .type = DATA_TYPE_B8,
         .of.b8 = 1
@@ -177,7 +177,7 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
   _gpio_write_clear();
 
   emk_message_t msg_okay_off = {
-    .address = EMK_COMMAND_ADDR(25),
+    .address = *EMK_COMMAND_ADDR(25),
     .data = (emk_data_t) {
         .type = DATA_TYPE_B8,
         .of.b8 = 0

@@ -49,7 +49,7 @@ emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_confi
                 continue;
             }
 
-            if (!SAME_ADDRESS_DEFAULT_GROUP(message->address, actuator->address)) {
+            if (!SAME_ADDRESS_DEFAULT_GROUP(message->address, *actuator->address)) {
                 continue;
             }
             const emk_gpio_actuator_configuration* cfg = (const emk_gpio_actuator_configuration*)actuator->config;
