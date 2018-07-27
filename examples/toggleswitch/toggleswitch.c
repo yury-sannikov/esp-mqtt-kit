@@ -55,7 +55,7 @@ const emk_actuator_t *actuator_data[] = {
 
 // Groups data with ingestors and actuators data
 const emk_group_t *groups[] = {
-    MAKE_GROUP("main", 1,
+    MAKE_GROUP("main", 0,
         .ingestors = ingestor_data,
         .actuators = actuator_data
     ),

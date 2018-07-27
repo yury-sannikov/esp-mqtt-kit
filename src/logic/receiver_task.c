@@ -6,7 +6,6 @@
 
 int receiver_task( void *pvParameters )
 {
-    DEBUG("receiver_task started");
     const emk_task_parameter_block_t* pb = (const emk_task_parameter_block_t*)pvParameters;
     if (!pb) {
         ABORT("receiver_task has null parameter block received");
@@ -16,11 +15,12 @@ int receiver_task( void *pvParameters )
         ABORT("receiver_task has no queue set");
         return -2;
     }
-    DEBUG("receiver_task check pass");
-    printf("__gpio_irq_block.queue = %X", __gpio_irq_block.queue);
+
+    DEBUG("receiver_task started");
+
     emk_message_t msg;
     for( ;; ) {
-        if (xQueueReceive(__gpio_irq_block.queue, &msg, LOGIC_TIMER_RESOLUTION_MS / portTICK_PERIOD_MS)) {
+        if (xQueueReceive(pb->irq_block->queue, &msg, LOGIC_TIMER_RESOLUTION_MS / portTICK_PERIOD_MS)) {
             emk_context_t context;
             DEBUG("");
             DEBUG_NL("receiver_task ");
