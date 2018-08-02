@@ -7,7 +7,7 @@
 #include "mqttkit/message.h"
 #include "helpers/common_types.h"
 
-uint32_t IRAM __message_send_overflow_counter = 0;
+uint32_t __message_send_overflow_counter = 0;
 
 
 void emk_context_init(emk_context_t* context, const emk_address_t* address) {

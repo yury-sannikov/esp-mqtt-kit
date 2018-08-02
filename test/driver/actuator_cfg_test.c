@@ -12,6 +12,7 @@ TEST_GROUP_RUNNER(ActuatorConfig)
   RUN_TEST_CASE(ActuatorConfig, emk_abort_on_unknown_actuator_type);
   RUN_TEST_CASE(ActuatorConfig, failing_on_reuse_the_same_ingestor_pin_for_actuator);
   RUN_TEST_CASE(ActuatorConfig, actuator_process_message_address_match);
+  RUN_TEST_CASE(ActuatorConfig, actuator_initial_state_true);
 }
 
 emk_task_parameter_block_t parameter_block;
@@ -100,6 +101,48 @@ TEST(ActuatorConfig, failing_on_reuse_the_same_ingestor_pin_for_actuator)
   TEST_ASSERT_EQUAL(1, getAbortsCount());
 }
 
+TEST(ActuatorConfig, actuator_initial_state_true) {
+  const emk_ingestor_t *ingestor_data[] = {
+    NULL
+  };
+
+  const emk_actuator_t *actuator_data[] = {
+      &(emk_actuator_t) {
+          .name="relay",
+          .type=ACTUATOR_TYPE_GPIO,
+          .address=EMK_COMMAND_ADDR(25),
+          .config=GPIO_ACTUATOR_CFG(
+            .gpio = 7,
+            .initial_state = 0xFF
+          )
+      },
+      NULL
+  };
+
+  const emk_group_t *groups[] = {
+    MAKE_GROUP("main", 1,
+      .ingestors = ingestor_data,
+      .actuators = actuator_data
+    ),
+    NULL
+  };
+
+  emk_config_t config = {
+    .groups = groups,
+    .reserved_pins = 0
+  };
+
+  _gpio_write_clear();
+  _create_gpio_irq_block(&config);
+
+  TEST_ASSERT_EQUAL(0, hasAbort());
+  TEST_ASSERT_EQUAL_INT8(7, _gpio_enable_gpio_num);
+  TEST_ASSERT_EQUAL_INT8(GPIO_OUTPUT, _gpio_enable_direction);
+
+  TEST_ASSERT_EQUAL(7, _gpio_write__gpio_num);
+  TEST_ASSERT_EQUAL(1, _gpio_write__set);
+}
+
 TEST(ActuatorConfig, actuator_process_message_address_match) {
 
   const emk_ingestor_t *ingestor_data[] = {
@@ -112,7 +155,8 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
           .type=ACTUATOR_TYPE_GPIO,
           .address=EMK_COMMAND_ADDR(25),
           .config=GPIO_ACTUATOR_CFG(
-            .gpio = 7
+            .gpio = 7,
+            .initial_state = 0
           )
       },
       NULL
@@ -139,6 +183,10 @@ TEST(ActuatorConfig, actuator_process_message_address_match) {
   // Check enable_gpio call
   TEST_ASSERT_EQUAL_INT8(7, _gpio_enable_gpio_num);
   TEST_ASSERT_EQUAL_INT8(GPIO_OUTPUT, _gpio_enable_direction);
+
+  TEST_ASSERT_EQUAL(7, _gpio_write__gpio_num);
+  TEST_ASSERT_EQUAL(0, _gpio_write__set);
+  _gpio_write_clear();
 
   emk_message_t msg_wrong = {
     .address = *EMK_COMMAND_ADDR(1),

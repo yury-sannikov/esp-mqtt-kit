@@ -26,6 +26,8 @@ void gpio_actuator__init_gpio(uint16_t* used_pins, const void* driver, const emk
     *used_pins |= pin_m;
     // Enable this pin for output, todo: config for opendrain
     gpio_enable(cfg->gpio, GPIO_OUTPUT);
+    // Set GPIO initial state
+    gpio_write(cfg->gpio, cfg->initial_state != 0);
 }
 
 void gpio_actuator__gpio_iqr_block(emk_gpio_irq_block_t* irq_block, const void* driver) {

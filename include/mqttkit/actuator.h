@@ -16,6 +16,8 @@ typedef enum _emk_actuator_type {
 struct _gpio_actuator_configuration {
     // GPIO port number
     uint8_t gpio;
+    // Initial GPIO state
+    uint8_t initial_state;
 };
 
 #define GPIO_ACTUATOR_CFG(...) \

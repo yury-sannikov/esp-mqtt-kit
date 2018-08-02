@@ -47,7 +47,8 @@ const IRAM_DATA emk_actuator_t *actuator_data[] = {
     GPIO_ACTUATOR("Controlled LED",
         .address=EMK_COMMAND_ADDR(1),
         .config=GPIO_ACTUATOR_CFG(
-            .gpio = GPIO_LED
+            .gpio = GPIO_LED,
+            .initial_state = 0
         )
     ),
     NULL
