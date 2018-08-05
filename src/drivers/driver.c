@@ -43,3 +43,10 @@ emk_driver_middleware_result_t emk_invoke_driver_middleware(const emk_config_t* 
     }
     return MIDDLEWARE_RESULT_NOT_HANDLED;
 }
+
+void emk_pool_drivers(const emk_config_t* config) {
+    for (const emk_driver_t **driver_it = driver_data; *driver_it; driver_it++) {
+        const emk_driver_t *driver = *driver_it;
+        driver->pool(config);
+    }
+}

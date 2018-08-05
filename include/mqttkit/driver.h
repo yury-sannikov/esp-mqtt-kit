@@ -46,12 +46,17 @@ struct _emk_driver {
     // and ignore or dispatch another message
     emk_driver_middleware_result_t (*message_middleware)(const emk_config_t* config, const emk_message_t* message, emk_context_t* context);
 
+    // This function will be called each LOGIC_TIMER_RESOLUTION_MS or after message has been received
+    // Used to handle non-critical timeouts in driver logic such as initial state notifications
+    void (*pool)(const emk_config_t* config);
+
 };
 
 #define DECLARE_DRIVER(prefix) \
     void prefix##__init_gpio(uint16_t* used_pins, const void* driver, const emk_group_t *group, const emk_config_t* config); \
     void prefix##__gpio_iqr_block(emk_gpio_irq_block_t* gpio_irq_block, const void* driver); \
-    emk_driver_middleware_result_t prefix##__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context);
+    emk_driver_middleware_result_t prefix##__message_middleware(const emk_config_t* config, const emk_message_t* message, emk_context_t* context); \
+    void prefix##__pool(const emk_config_t* config);
 
 
 #define REGISTER_DRIVER(theType, theSubtype, prefix) \
@@ -60,7 +65,8 @@ struct _emk_driver {
         .subtype = theSubtype, \
         .init_gpio = prefix##__init_gpio, \
         .gpio_iqr_block = prefix##__gpio_iqr_block, \
-        .message_middleware = prefix##__message_middleware \
+        .message_middleware = prefix##__message_middleware, \
+        .pool = prefix##__pool \
     }
 
 
@@ -77,5 +83,8 @@ void IRAM gpio_ingestor_interrupt_handler(uint8_t gpio_num);
 // If message consumed, MIDDLEWARE_RESULT_HANDLED should be returned.
 // New message goes back into queue so other middleware have a chance to process that new message
 emk_driver_middleware_result_t emk_invoke_driver_middleware(const emk_config_t* config, const emk_message_t *message, emk_context_t* context);
+
+// Call drivers __pool method
+void emk_pool_drivers(const emk_config_t* config);
 
 #endif // __ESP_MQTT_KIT_DRIVER_H__

@@ -36,6 +36,9 @@ int receiver_task( void *pvParameters )
             emk_context_cleanup(&context);
         }
 
+        // Go over drivers and call `pool` method to handle driver internal timeouts
+        emk_pool_drivers(pb->config);
+
         // HERE: Process timers
 
 #ifdef SYSTEM_UNDER_TEST

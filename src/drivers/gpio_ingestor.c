@@ -97,3 +97,7 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
     }
     return MIDDLEWARE_RESULT_HANDLED;
 }
+
+void gpio_ingestor__pool(const emk_config_t* config) {
+    (void)config;
+}

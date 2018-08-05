@@ -16,7 +16,9 @@ void emk_context_init(emk_context_t* context, const emk_address_t* address) {
 }
 
 void emk_context_send(emk_context_t* context, const emk_message_t* message) {
-    context->message_consumed = true;
+    if (context) {
+        context->message_consumed = true;
+    }
     if (errQUEUE_FULL == xQueueSend(__gpio_irq_block.queue, message, 0)) {
         ++__message_send_overflow_counter;
     }

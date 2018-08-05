@@ -17,7 +17,7 @@ typedef uint32_t BaseType_t;
 // define stuff for tests only
 #define IRAM_DATA
 #define IRAM
-#define portTICK_PERIOD_MS 1
+#define portTICK_PERIOD_MS 10
 #define GPIO_INTTYPE_EDGE_ANY 0xBAD
 #define pdTRUE			( ( BaseType_t ) 1 )
 #define pdPASS			( pdTRUE )

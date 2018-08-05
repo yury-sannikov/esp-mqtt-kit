@@ -92,7 +92,7 @@ union _emk_address {
     &(emk_address_t) { \
         .f.address = theAddr, \
         .f.command_status = 0, \
-        .f.group_mask = 1 < grpNum \
+        .f.group_mask = 1 << (grpNum) \
     }
 
 // Create Command address with multicast bit group address
@@ -120,12 +120,20 @@ union _emk_address {
         DEBUG_DRIVER_TYPE((theAddr).s.driver_type); \
     } \
     else { \
-        DEBUG_NL("%s[%s/0x%X at "BYTE_TO_BINARY_PATTERN"]", \
-            (theMsg), \
-            (theAddr).f.command_status == 1 ? "cmd": "st", \
-            (theAddr).f.address, \
-            BYTE_TO_BINARY((theAddr).f.group_mask) \
-        ); \
+        if ((theAddr).f.group_mask == 0) { \
+            DEBUG_NL("%s[%s/0x%X in default]", \
+                (theMsg), \
+                (theAddr).f.command_status == 1 ? "cmd": "st", \
+                (theAddr).f.address \
+            ); \
+        } else { \
+            DEBUG_NL("%s[%s/0x%X in "BYTE_TO_BINARY_PATTERN"]", \
+                (theMsg), \
+                (theAddr).f.command_status == 1 ? "cmd": "st", \
+                (theAddr).f.address, \
+                BYTE_TO_BINARY((theAddr).f.group_mask) \
+            ); \
+        } \
     }
 
 #endif //__ESP_MQTT_KIT_ADDRESS_H__
