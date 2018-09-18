@@ -9,6 +9,7 @@ static void RunAllTests(void)
   RUN_TEST_GROUP(ActuatorConfig);
   RUN_TEST_GROUP(INTEGRATION_ON_OFF);
   RUN_TEST_GROUP(DriverPool);
+  RUN_TEST_GROUP(ToggleswitchLogic);
 }
 
 int main(int argc, const char * argv[])

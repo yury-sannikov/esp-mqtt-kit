@@ -77,4 +77,7 @@ extern bool _gpio_write__set;
 void gpio_write(const uint8_t gpio_num, const bool set);
 void _gpio_write_clear(void);
 
+void test_send_message(const emk_message_t* msg, void* parameter_block);
+bool test_process_next(void* parameter_block);
+
 #endif //__ESP_MQTT_KIT__TEST_COMMON_H__

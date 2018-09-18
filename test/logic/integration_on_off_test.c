@@ -29,24 +29,6 @@ TEST_TEAR_DOWN(INTEGRATION_ON_OFF)
 {
 }
 
-void test_send_message(const emk_message_t* msg) {
-    _xQueueReceive_pvBuffer = msg;
-    _xQueueReceive_retval = 1;
-    _task_tick_count += 100;
-    receiver_task(&parameter_block);
-}
-
-bool test_receive_next(void) {
-    emk_message_t msg;
-    if (!_xQueueSend_unshift(&msg)) {
-        return false;
-    }
-    _xQueueReceive_pvBuffer = &msg;
-    _xQueueReceive_retval = 1;
-    _task_tick_count += 100;
-    receiver_task(&parameter_block);
-    return true;
-}
 /* This test create 2 buttons. Firs one works by positive edge and send C/1 message with the status
    Second button works by negative edge and send C/1 message as well
    Actuator set up on GPIO=3 and use the same C/1 addres.
@@ -113,7 +95,7 @@ TEST(INTEGRATION_ON_OFF, integration_on_off_test) {
                 .gpio_val = 1
             }
         }
-    });
+    }, &parameter_block);
     // Press button OFF
     test_send_message(&(emk_message_t){
         .address = EMK_SYS_MIDDLEWARE_ADDR(DRIVER_TYPE_INGESTOR),
@@ -124,19 +106,19 @@ TEST(INTEGRATION_ON_OFF, integration_on_off_test) {
                 .gpio_val = 0
             }
         }
-    });
+    }, &parameter_block);
     // Ingestor middleware should generate 2 messages
     TEST_ASSERT_EQUAL(2, _xQueueSend_buff_idx);
 
     // `Controlled LED` ON
     _gpio_write_clear();
-    test_receive_next();
+    test_process_next(&parameter_block);
     TEST_ASSERT_EQUAL(3, _gpio_write__gpio_num);
     TEST_ASSERT_EQUAL(1, _gpio_write__set);
 
     // `Controlled LED` OFF
     _gpio_write_clear();
-    test_receive_next();
+    test_process_next(&parameter_block);
     TEST_ASSERT_EQUAL(3, _gpio_write__gpio_num);
     TEST_ASSERT_EQUAL(0, _gpio_write__set);
 

@@ -1,6 +1,7 @@
 #include <string.h>
 #include "unity.h"
 #include "helpers/common_types.h"
+#include "mqttkit/mqttkit.h"
 
 int __test_gpio_set_interrupt_count = 0;
 int __test_gpio_set_interrupt_bits = 0;
@@ -27,7 +28,7 @@ void assert_gpio_set_interrupt(int gpio_mask, int call_count) {
 QueueHandle_t xQueueCreate(UBaseType_t uxQueueLength, UBaseType_t uxItemSize) {
     (void)uxQueueLength;
     (void)uxItemSize;
-    return 0;
+    return 1;
 }
 
 TickType_t _task_tick_count = 0;
@@ -141,4 +142,24 @@ void gpio_enable(const uint8_t gpio_num, const gpio_direction_t direction) {
 void _gpio_enable_clear() {
     _gpio_enable_gpio_num = 0;
     _gpio_enable_direction = GPIO_NOT_SET;
+}
+
+
+void test_send_message(const emk_message_t* msg, void* parameter_block) {
+    _xQueueReceive_pvBuffer = msg;
+    _xQueueReceive_retval = 1;
+    _task_tick_count += 100;
+    receiver_task((emk_task_parameter_block_t*)parameter_block);
+}
+
+bool test_process_next(void* parameter_block) {
+    emk_message_t msg;
+    if (!_xQueueSend_unshift(&msg)) {
+        return false;
+    }
+    _xQueueReceive_pvBuffer = &msg;
+    _xQueueReceive_retval = 1;
+    _task_tick_count += 100;
+    receiver_task((emk_task_parameter_block_t*)parameter_block);
+    return true;
 }
