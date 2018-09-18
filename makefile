@@ -28,6 +28,7 @@ endif
 
 
 CFLAGS=-std=c99
+CFLAGS += -Werror
 CFLAGS += -Wall
 CFLAGS += -Wextra
 CFLAGS += -Wpointer-arith
