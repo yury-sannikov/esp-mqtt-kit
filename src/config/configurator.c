@@ -17,6 +17,8 @@ void emk_initialize(const emk_config_t* cfg) {
     iblock->queue = message_queue;
 
     _register_interrupt_handlers(iblock);
+
+    _init_logic_blocks(cfg);
 }
 
 emk_gpio_irq_block_t  __gpio_irq_block;

@@ -17,7 +17,8 @@
 
 
 emk_task_parameter_block_t receiver_task_parameter_block;
-void receiver_task(void *pvParameters);
+
+typedef void (*receiver_task_t)(void *pvParameters);
 
 void mqtt_kit_init(const emk_config_t *config)
 {
@@ -30,7 +31,7 @@ void mqtt_kit_init(const emk_config_t *config)
     receiver_task_parameter_block.irq_block = &__gpio_irq_block;
 
     DEBUG("calling xTaskCreate");
-    BaseType_t xReturned = xTaskCreate(receiver_task, "receiver_task", 768, &receiver_task_parameter_block, 2, NULL);
+    BaseType_t xReturned = xTaskCreate((receiver_task_t)receiver_task, "receiver_task", 768, &receiver_task_parameter_block, 2, NULL);
     if( xReturned != pdPASS )
     {
         ABORT("unable to start receiver_task");

@@ -30,7 +30,7 @@ int receiver_task( void *pvParameters )
             emk_context_init(&context, &msg.address);
 
             if (MIDDLEWARE_RESULT_HANDLED != emk_invoke_driver_middleware(pb->config, &msg, &context)) {
-                // invoke logic
+                // emk_process_logic(pb->config, &msg, &context);
             }
             // Check & cleanup context
             emk_context_cleanup(&context);
