@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include "ingestor.h"
 #include "actuator.h"
+#include "logic.h"
 
 struct  _emk_group;
 typedef struct _emk_group emk_group_t;
@@ -15,6 +16,8 @@ struct  _emk_group {
     const emk_ingestor_t **ingestors;
     // Actuators array
     const emk_actuator_t **actuators;
+    // Logic array
+    const emk_logic_t **logic;
 };
 
 #define MAKE_GROUP(theName, addr, ...) \
