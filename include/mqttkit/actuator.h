@@ -3,11 +3,10 @@
 
 #include <stdint.h>
 #include "address.h"
+#include "typedefs.h"
 
 struct _emk_actuator;
 struct _gpio_actuator_configuration;
-typedef struct _emk_actuator emk_actuator_t;
-typedef struct _gpio_actuator_configuration emk_gpio_actuator_configuration;
 
 typedef enum _emk_actuator_type {
     ACTUATOR_TYPE_GPIO = 1,

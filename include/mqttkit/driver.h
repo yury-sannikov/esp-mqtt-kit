@@ -5,11 +5,11 @@
 #include "configurator.h"
 #include "context.h"
 #include "message.h"
+#include "typedefs.h"
 
 #define IRQ_LAST_TRIGGERED_DEFAULT_TIME 0xDEADBEEF
 
 struct _emk_driver;
-typedef struct _emk_driver emk_driver_t;
 
 typedef enum {
     DRIVER_TYPE_INGESTOR = 1,

@@ -4,6 +4,7 @@
 #include "mqttkit/ingestor.h"
 #include "mqttkit/context.h"
 #include "helpers/common_types.h"
+#include "mqttkit/actuator.h"
 
 DECLARE_DRIVER(gpio_ingestor)
 DECLARE_DRIVER(gpio_actuator)

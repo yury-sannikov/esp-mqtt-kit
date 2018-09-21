@@ -24,6 +24,16 @@ void emk_context_send(emk_context_t* context, const emk_message_t* message) {
     }
 }
 
+void emk_context_send_with_group(emk_context_t* context, const emk_group_t* group, emk_message_t* message) {
+    if (!group) {
+        ABORT("emk_context_send_to_group has a null group");
+        return;
+    }
+    EMK_ADDRESS_MERGE_WITH_GROUP(message->address, message->address, *group);
+    emk_context_send(context, message);
+}
+
+
 void emk_context_consume(emk_context_t* context) {
     context->message_consumed = true;
 }

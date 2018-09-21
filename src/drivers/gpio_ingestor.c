@@ -57,7 +57,6 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
     const emk_gpio_data_t* gpio_data = &message->data.of.gpio;
     for (const emk_group_t **group_it = config->groups; *group_it; group_it++) {
         const emk_group_t *group = *group_it;
-
         if (group->ingestors == NULL) {
             ABORT("Null ingestors in group %s", group->name);
             return MIDDLEWARE_RESULT_NOT_HANDLED;
@@ -77,11 +76,8 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
                 ((cfg->edge & EMK_GPIO_EDGE_NEG) && (gpio_data->gpio_val == 0));
 
             if (cfg->gpio == gpio_data->gpio_num && should_trigger) {
-                // Add group to the address, if no group has been specified
-                emk_address_t address_with_group;
-                EMK_ADDRESS_MERGE_WITH_GROUP(address_with_group, *ingestor->address, *group);
                 emk_message_t msg = {
-                    .address = address_with_group,
+                    .address = *ingestor->address,
                     .data = (emk_data_t) {
                         .type = DATA_TYPE_B8,
                         .of.b8 = gpio_data->gpio_val
@@ -91,7 +87,7 @@ emk_driver_middleware_result_t gpio_ingestor__message_middleware(const emk_confi
                 DEBUG("`%s`", ingestor->name)
 
                 // Send message by making copy of it. Use active group if address has no group in it
-                emk_context_send(context, &msg);
+                emk_context_send_with_group(context, group, &msg);
             }
         }
     }

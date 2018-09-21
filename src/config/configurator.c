@@ -5,6 +5,7 @@
 #include "mqttkit/debug.h"
 #include "mqttkit/driver.h"
 #include "mqttkit/message.h"
+#include "mqttkit/actuator.h"
 
 void emk_initialize(const emk_config_t* cfg) {
     if (!cfg) {

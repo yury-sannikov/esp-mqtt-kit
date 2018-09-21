@@ -2,10 +2,9 @@
 #define __ESP_MQTT_KIT_LOGIC_TOGGLESWITCH_H__
 #include <stdint.h>
 #include "mqttkit/data_types.h"
-#include "mqttkit/context.h"
-#include "mqttkit/logic.h"
+#include "mqttkit/typedefs.h"
 
-void* toggle_switch_logic_handler(uint32_t slot_id, const void* slot_config, void* handler_context, const emk_data_t* payload, emk_context_t* call_context);
+void* toggle_switch_logic_handler(const emk_group_t* group, uint32_t slot_id, const void* slot_config, void* handler_context, const emk_data_t* payload, emk_context_t* call_context);
 
 typedef enum {
     // Message to this slot will set TS to the ON state
@@ -22,6 +21,11 @@ typedef enum {
     // Feedback status is used as a reference for TOGGLESWITCH_TOGGLE slot
     TOGGLESWITCH_FEEDBACK
 } toggleswitch_slot_t;
+
+typedef enum {
+    TOGGLESWITCH_OFF = 0,
+    TOGGLESWITCH_ON = 1
+} toggleswitch_state_t;
 
 #define TOGGLESWITCH_BLOCK(aName, aDispatchAddress, aSlots) \
     &(emk_logic_t) { \

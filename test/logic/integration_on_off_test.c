@@ -1,4 +1,5 @@
 #include <string.h>
+#include "mqttkit/actuator.h"
 #include "unity.h"
 #include "unity_fixture.h"
 #include "helpers/common_types.h"

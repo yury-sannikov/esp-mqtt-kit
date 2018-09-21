@@ -2,12 +2,10 @@
 #define __ESP_MQTT_KIT_LOGIC_H__
 
 #include "mqttkit/context.h"
+#include "mqttkit/typedefs.h"
 
 struct _emk_logic;
 struct _emk_logic_slot;
-
-typedef struct _emk_logic emk_logic_t;
-typedef struct _emk_logic_slot emk_logic_slot_t;
 
 // Slot number when mqttkit initialize logic block
 #define SLOT_ID_INIT (uint32_t)-1
@@ -27,7 +25,7 @@ struct _emk_logic {
     //   handler_context - data, previously returned from the logic_handler function. Might be used to hold internal state for the particular logic instance
     //   payload - message data
     //   call_context - execution context
-    void* (*logic_handler)(uint32_t slot_id, const void* config, void* handler_context, const emk_data_t* payload, emk_context_t* call_context);
+    void* (*logic_handler)(const emk_group_t* group, uint32_t slot_id, const void* config, void* handler_context, const emk_data_t* payload, emk_context_t* call_context);
     // Logic block configuration
     const void* config;
 };

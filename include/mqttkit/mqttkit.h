@@ -1,7 +1,11 @@
 #ifndef __ESP_MQTT_KIT_H__
 #define __ESP_MQTT_KIT_H__
 
+#include "mqttkit/typedefs.h"
 #include "mqttkit/configurator.h"
+#include "mqttkit/actuator.h"
+#include "mqttkit/ingestor.h"
+#include "mqttkit/logic.h"
 
 // Initialize MQTT kit with configuration
 void mqtt_kit_init(const emk_config_t *config);

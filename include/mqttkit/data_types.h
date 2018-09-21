@@ -2,10 +2,10 @@
 #define __ESP_MQTT_KIT_DATATYPES_H__
 #include <stdint.h>
 #include <stdio.h>
-#include "mqttkit/address.h"
+#include "address.h"
+#include "typedefs.h"
 
 struct _emk_data;
-typedef struct _emk_data emk_data_t;
 
 typedef enum {
     DATA_TYPE_INVALID = 0,

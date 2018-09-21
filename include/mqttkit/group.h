@@ -1,12 +1,7 @@
 #ifndef __ESP_MQTT_KIT_GROUP_H__
 #define __ESP_MQTT_KIT_GROUP_H__
 #include <stdint.h>
-#include "ingestor.h"
-#include "actuator.h"
-#include "logic.h"
-
-struct  _emk_group;
-typedef struct _emk_group emk_group_t;
+#include "typedefs.h"
 
 struct  _emk_group {
     const char* name;

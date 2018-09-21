@@ -3,9 +3,9 @@
 #include <stdint.h>
 #include "mqttkit/address.h"
 #include "mqttkit/data_types.h"
+#include "mqttkit/typedefs.h"
 
 struct _emk_message;
-typedef struct _emk_message emk_message_t;
 
 struct _emk_message {
     emk_address_t address;

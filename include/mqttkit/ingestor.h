@@ -3,11 +3,10 @@
 
 #include <stdint.h>
 #include "address.h"
+#include "typedefs.h"
 
 struct _emk_ingestor;
 struct _gpio_ingestor_configuration;
-typedef struct _emk_ingestor emk_ingestor_t;
-typedef struct _gpio_ingestor_configuration emk_gpio_ingestor_configuration;
 
 // Contain a GPIO pin interrupt edge
 typedef enum {

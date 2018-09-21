@@ -1,4 +1,4 @@
-#include "mqttkit/configurator.h"
+#include "mqttkit/mqttkit.h"
 #include "mqttkit/debug.h"
 #include "mqttkit/driver.h"
 #include "mqttkit/message.h"
@@ -30,7 +30,7 @@ int receiver_task( void *pvParameters )
             emk_context_init(&context, &msg.address);
 
             if (MIDDLEWARE_RESULT_HANDLED != emk_invoke_driver_middleware(pb->config, &msg, &context)) {
-                // emk_process_logic(pb->config, &msg, &context);
+                emk_process_logic(pb->config, &msg, &context);
             }
             // Check & cleanup context
             emk_context_cleanup(&context);

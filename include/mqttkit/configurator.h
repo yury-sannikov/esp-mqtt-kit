@@ -7,6 +7,7 @@
 #include "address.h"
 #include "group.h"
 #include "ingestor.h"
+#include "typedefs.h"
 
 // Returned pointer to a memory should not be freed by user code
 #define RETAINED_PTR
@@ -14,11 +15,6 @@
 struct _emk_config;
 struct _emk_gpio_irq_block;
 struct _emk_task_parameter_block;
-
-typedef struct _emk_config emk_config_t;
-typedef struct _emk_gpio_irq_block emk_gpio_irq_block_t;
-typedef struct _emk_task_parameter_block emk_task_parameter_block_t;
-
 
 struct _emk_config {
     uint16_t reserved_pins;
