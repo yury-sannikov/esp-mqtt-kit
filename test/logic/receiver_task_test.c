@@ -268,5 +268,5 @@ TEST(RECEIVER_TASK, middleware_same_pin_integration_with_irq) {
             .of.b8 = 0
         }
     };
-    TEST_ASSERT_EQUAL_MSG(msg4_converted, _xQueueSend_buff[3]);
+    TEST_ASSERT_EQUAL_MSG(msg4_converted, *_xQueueSend_top());
 }

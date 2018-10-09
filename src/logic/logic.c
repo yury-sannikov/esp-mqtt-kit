@@ -64,12 +64,14 @@ void emk_process_logic(const emk_config_t* cfg, const emk_message_t *message, em
             }
 
             if (slot != NULL) {
-                DEBUG("emk_process_logic for %s:%s", logic->name, slot->name);
+                DEBUG("emk_process_logic for %s / %s", logic->name, slot->name);
                 void* logic_cxt = logic->logic_handler(group, slot->slot_id, logic->config, *current_context, &message->data, context);
 
                 if (logic_cxt) {
                     *current_context = logic_cxt;
                 }
+                // mark message as consumed because logic might not send back any messages
+                emk_context_consume(context);
             }
         }
     }

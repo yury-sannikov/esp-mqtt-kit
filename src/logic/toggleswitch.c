@@ -42,20 +42,29 @@ void* toggle_switch_logic_handler(const emk_group_t* group, uint32_t slot_id, co
             break;
         case TOGGLESWITCH_TOGGLE: {
             uint8_t state;
-            *((int*)handler_context) = ~*((int*)handler_context);
-            state = *((int*)handler_context) & 0xFF;
+            state = (*(int*)handler_context & 0xFF) ? 0 : 1;
             DEBUG("toggle_switch_logic_handler: TOGGLESWITCH_TOGGLE, report_state >> %d", state);
             report_state(call_context, group, report_address, state);
             break;
         }
         case TOGGLESWITCH_SET:
+            if (payload->type != DATA_TYPE_B8) {
+                ABORT("TOGGLESWITCH_SET expect DATA_TYPE_B8");
+            }
             DEBUG("toggle_switch_logic_handler: TOGGLESWITCH_SET, report_state >> %d", payload->of.b8);
             report_state(call_context, group, report_address, payload->of.b8);
             break;
-        case TOGGLESWITCH_FEEDBACK:
-            *((int*)handler_context) = payload->of.b8;
-            DEBUG("toggle_switch_logic_handler: TOGGLESWITCH_FEEDBACK, set_state << %d", payload->of.b8);
+        case TOGGLESWITCH_FEEDBACK: {
+            int new_state = 0;
+            switch(payload->type) {
+                case DATA_TYPE_GPIO: new_state = payload->of.gpio.gpio_val; break;
+                case DATA_TYPE_B8: new_state = payload->of.b8; break;
+                default: ABORT("TOGGLESWITCH_FEEDBACK has unknow data type");
+            }
+            *((int*)handler_context) = new_state;
+            DEBUG("toggle_switch_logic_handler: TOGGLESWITCH_FEEDBACK, set_state << %d", new_state);
             break;
+        }
         default:
             break;
     }
