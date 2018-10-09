@@ -60,7 +60,7 @@ void _report_actuator_status(const emk_actuator_t *actuator, const emk_group_t *
         .data = (emk_data_t) {
             .type = DATA_TYPE_GPIO,
             .of.gpio.gpio_num = cfg->gpio,
-            .of.gpio.gpio_val = value != 0 ? 0xF : 0
+            .of.gpio.gpio_val = value != 0 ? 1 : 0
         }
     };
     DEBUG_ADDR("Report actuator status to ", msg.address);
@@ -96,13 +96,15 @@ emk_driver_middleware_result_t gpio_actuator__message_middleware(const emk_confi
             emk_context_consume(context);
 
             DEBUG("gpio_actuator__message_middleware");
-            DEBUG("`%s` %s", actuator->name, value != 0 ? "ON" : "OFF")
+            DEBUG("`%s` %s (%s)", actuator->name, value != 0 ? "ON" : "OFF", (value & GPIO_ACTUATOR_NOFEEDBACK) ? "NO FEEDBACK" : "w/feedback")
 
             gpio_write(cfg->gpio, value != 0);
 
             // Send actuator state update if status_address is set
             if (actuator->status_address) {
-                _report_actuator_status(actuator, group, context, value);
+                if ((value & GPIO_ACTUATOR_NOFEEDBACK) == 0) {
+                    _report_actuator_status(actuator, group, context, value);
+                }
             }
         }
     }
