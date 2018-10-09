@@ -1,3 +1,6 @@
+.vscode/
+esp-mqtt-kit.code-workspace
+
 build/
 firmware/
 
