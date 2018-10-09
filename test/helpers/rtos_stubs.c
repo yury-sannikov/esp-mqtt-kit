@@ -110,6 +110,9 @@ BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_
     return pdTRUE;
 
 }
+emk_message_t* _xQueueSend_top() {
+    return &_xQueueSend_buff[_xQueueSend_buff_idx == 0 ? xQueueSend_SIZE - 1 : _xQueueSend_buff_idx - 1];
+}
 
 bool _xQueueSend_unshift(emk_message_t* dst_message) {
     if (_xQueueSend_buff_idx == 0) {

@@ -107,8 +107,8 @@ TEST(DriverPool, actuator_send_initial_data_on_pool)
       .data = (emk_data_t) {
           .type = DATA_TYPE_GPIO,
           .of.gpio.gpio_num = 7,
-          .of.gpio.gpio_val = 0xF
+          .of.gpio.gpio_val = 0x1
       }
   };
-  TEST_ASSERT_EQUAL_MSG(msg_reported_status, _xQueueSend_buff[0]);
+  TEST_ASSERT_EQUAL_MSG(msg_reported_status, *_xQueueSend_top());
 }

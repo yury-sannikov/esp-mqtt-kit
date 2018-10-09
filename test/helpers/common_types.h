@@ -20,6 +20,7 @@ typedef uint32_t BaseType_t;
 #define portTICK_PERIOD_MS 10
 #define GPIO_INTTYPE_EDGE_ANY 0xBAD
 #define pdTRUE			( ( BaseType_t ) 1 )
+#define pdFALSE			( ( BaseType_t ) 0 )
 #define pdPASS			( pdTRUE )
 #define pdFAIL			( pdFALSE )
 #define errQUEUE_EMPTY	( ( BaseType_t ) 0 )
@@ -67,6 +68,7 @@ extern int _xQueueSend_buff_idx;
 BaseType_t xQueueSend(QueueHandle_t xQueue, const void *pvItemToQueue, TickType_t xTicksToWait);
 void _xQueueSend_clear(void);
 bool _xQueueSend_unshift(emk_message_t* dst_message);
+emk_message_t* _xQueueSend_top(void);
 
 extern const emk_message_t* _xQueueReceive_pvBuffer;
 extern BaseType_t _xQueueReceive_retval;
